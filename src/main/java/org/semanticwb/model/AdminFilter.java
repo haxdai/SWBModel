@@ -30,6 +30,9 @@ import java.util.StringTokenizer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.semanticwb.platform.SemanticClass;
+import org.semanticwb.platform.SemanticObject;
+import org.semanticwb.SWBPlatform;
 
 // TODO: Auto-generated Javadoc
 /**
