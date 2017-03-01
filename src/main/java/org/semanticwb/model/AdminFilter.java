@@ -196,7 +196,15 @@ public class AdminFilter extends org.semanticwb.model.base.AdminFilterBase {
                 if (val.startsWith("getTopic.")) {
                     String id = ele.getAttribute("id");
                     String model = ele.getAttribute("topicmap");
-                    WebPage page = SWBContext.getWebSite(model).getWebPage(id);
+                    
+                    WebPage page = null;
+                    //Try to get object by URI first
+                    GenericObject gobj = SWBPlatform.getSemanticMgr().getOntology().getGenericObject(model);
+                    if (null == gobj) {
+                        page = SWBContext.getWebSite(model).getWebPage(id);
+                    } else if (gobj instanceof WebSite) {
+                        page = ((WebSite)gobj).getWebPage(id);
+                    }
                     if (page != null) {
                         pages.add(page);
                     }
