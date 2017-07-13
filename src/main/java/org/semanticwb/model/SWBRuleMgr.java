@@ -18,7 +18,7 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
@@ -126,74 +126,20 @@ public class SWBRuleMgr
 //            }
 //        }
     }
-    
-//    /**
-//     * @param User user
-//     * @param Occurrence occ
-//     * @return boolean
-//     */
-//    public boolean eval(User user, Occurrence occ)
-//    {
-//        //System.out.println("EvalOcc:"+occ);
-//        boolean ret=false;
-//        String topicmap=occ.getDbdata().getIdtm();
-//        String occid=occ.getId();
-//        HashMap map=(HashMap)occDoms.get(topicmap);
-//        HashMap mapUpd=(HashMap)occUpds.get(topicmap);
-//        if(map==null)
-//        {
-//            map=new HashMap();
-//            occDoms.put(topicmap,map);
-//            mapUpd=new HashMap();
-//            occUpds.put(topicmap,mapUpd);
-//        }
-//
-//        Document dom=(Document)map.get(occid);
-//        Timestamp update=(Timestamp)mapUpd.get(occid);
-//
-//        if(dom==null || update==null || !occ.getDbdata().getLastupdate().equals(update))
-//        {
-//            //System.out.println("AddOcc:"+occ);
-//            String raux=occ.getResourceData();
-////            raux=AFUtils.replaceAll(raux, "{|{","<");
-////            raux=AFUtils.replaceAll(raux, "}|}",">");
-//            //dom=AFUtils.getInstance().XmltoDom(AFUtils.replaceXMLTags(raux));
-//            dom=AFUtils.getInstance().XmltoDom(raux);
-//            update=occ.getDbdata().getLastupdate();
-//            map.put(occid, dom);
-//            mapUpd.put(occid,update);
-//        }
-//
-//        if (user.getDom() != null && dom != null)
-//        {
-//            NodeList nl = dom.getElementsByTagName("rule");
-//            if(nl.getLength()>0)
-//            {
-//                Node node = nl.item(0);
-//                //System.out.println("Start:"+node.getNodeName());
-//                if (node != null)
-//                {
-//                    ret=and(node, user, topicmap);
-//                }
-//            }
-//        }
-//        return ret;
-//    }
+ 
 
     /**
- * Eval.
- * 
- * @param user the user
- * @param rule_uri the rule_uri
- * @return true, if successful
- * @return
- */
+	 * Eval.
+	 * 
+	 * @param user the user
+	 * @param rule_uri the rule_uri
+	 * @return true, if successful
+	 * @return
+	 */
     public boolean eval(User user, String rule_uri)
     {
-        //System.out.println("rule:"+rule_uri+" "+user);
         boolean ret=false;
         Document rul = doms.get(rule_uri);
-        //System.out.println("xml:"+SWBUtils.XML.domToXml(rul));
         if(rul==null)
         {
             synchronized(this)
@@ -217,14 +163,12 @@ public class SWBRuleMgr
         if (user != null && rul != null)
         {
             Node node = rul.getChildNodes().item(0);
-            //System.out.println("Start:"+node.getNodeName());
             if (node != null && node.getNodeName().equals("rule"))
             {
                 ret=and(node, user);
             }
         }
-        //System.out.println("user:"+user.getId()+" rule:"+rule+" site:"+topicmap+" ret:"+ret);
-        //System.out.println(" ret:"+ret);
+
         return ret;
     }
 
@@ -258,13 +202,12 @@ public class SWBRuleMgr
                 }
                 if (!ret) 
                 {
-                    //System.out.println(" AND false");
                     ret=false;
                     break;
                 }
             }
         }
-        //System.out.println(" AND true");
+
         return ret;
     }
 
@@ -279,7 +222,7 @@ public class SWBRuleMgr
     public boolean or(Node node, User user)
     {
         boolean ret=false;
-        //System.out.println("or:"+node.getNodeName());
+
         NodeList nl = node.getChildNodes();
         for (int x = 0; x < nl.getLength(); x++)
         {
@@ -317,7 +260,7 @@ public class SWBRuleMgr
     public boolean exp(Node node, User user)
     {
         boolean ret = false;
-        //System.out.println("exp:"+node.getNodeName());
+
         try
         {
             Node aux = node.getChildNodes().item(0);
@@ -333,9 +276,6 @@ public class SWBRuleMgr
                 cond = att.getNodeValue();
             }
             String value = aux.getNodeValue();
-            
-            //System.out.println("name:"+name+" cond:"+cond +" value:"+value);
-            //new Exception().printStackTrace();
             
             //validacion de Reglas
             if(name.equals(TAG_INT_RULE))
@@ -447,7 +387,7 @@ public class SWBRuleMgr
                 if(prop!=null && prop.isDataTypeProperty())
                 {
                     String usrval = user.getSemanticObject().getProperty(prop);
-                    //System.out.println(usrval+cond+value);
+
                     if(usrval==null && value==null)
                     {
                         ret=true;
@@ -501,15 +441,13 @@ public class SWBRuleMgr
                             }
                         }
                     }
-                    //System.out.println(ret);
-                    //if (ret) return true;
                 }
             }
         } catch (Exception e)
         {
             log.error("SWBRuleMgr.exp:"+user+" -> "+SWBUtils.XML.domToXml(node.getOwnerDocument()),e);
         }
-        //System.out.println(ret);
+
         return ret;
     }
 
@@ -544,55 +482,4 @@ public class SWBRuleMgr
             log.error("Rule:"+rule.getURI(), e);
         }
     }
-
-//    /** Avisa al observador de que se ha producido un cambio.
-//     * @param s
-//     * @param obj  */
-//    public void sendDBNotify(String s, Object obj)
-//    {
-//        RecRule rule=(RecRule)obj;
-//        if(rule==null)return;
-//        HashMap map=(HashMap)doms.get(rule.getTopicMapId());
-//        if(map==null)
-//        {
-//            map=new HashMap();
-//            doms.put(rule.getTopicMapId(),map);
-//        }
-//
-//        if (s.equals("remove"))
-//        {
-//            map.remove(new Integer(rule.getId()));
-//        } else if (s.equals("create"))
-//        {
-//            try
-//            {
-//                if (rule.getXml() != null)
-//                {
-//                    Document dom = com.infotec.appfw.util.AFUtils.getInstance().XmltoDom(rule.getXml());
-//                    if (dom != null) map.put(new Integer(rule.getId()), dom);
-//                }
-//            } catch (Exception e)
-//            {
-//                AFUtils.log(e, com.infotec.appfw.util.AFUtils.getLocaleString("locale_core", "error_RuleMgr_sendDBNotify_trasnXML") + rule.getId(), true);
-//            }
-//        } else if (s.equals("update") || s.equals("load"))
-//        {
-//            try
-//            {
-//                if (rule.getXml() != null)
-//                {
-//                    Document dom = com.infotec.appfw.util.AFUtils.getInstance().XmltoDom(rule.getXml());
-//                    if (dom != null)
-//                    {
-//                        map.remove(new Integer(rule.getId()));
-//                        map.put(new Integer(rule.getId()), dom);
-//                    }
-//                }
-//            } catch (Exception e)
-//            {
-//                AFUtils.log(e, com.infotec.appfw.util.AFUtils.getLocaleString("locale_core", "error_RuleMgr_sendDBNotify_trasnXML") + rule.getId(), true);
-//            }
-//        }
-//    }
-
 }
