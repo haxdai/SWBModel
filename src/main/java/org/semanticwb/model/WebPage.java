@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,7 +18,7 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
@@ -30,13 +30,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+
 import org.semanticwb.Logger;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBUtils;
-import org.semanticwb.model.base.*;
+import org.semanticwb.model.base.WebPageBase;
 import org.semanticwb.platform.SemanticObject;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class WebPage.
  */
@@ -168,7 +168,6 @@ public class WebPage extends WebPageBase
     public String getUrl()
     {
         String url=getUrl((String)null,true);
-        //System.out.println("url 3:"+url);
         return url;
     } 
     
@@ -216,7 +215,6 @@ public class WebPage extends WebPageBase
         String url=getDisplayWebPageURL(lang);
         if(url!=null)
         {
-            //System.out.println("url 1:"+url);
             {
                 if(encodeAmps && url.indexOf('&')>-1)
                 {
@@ -226,11 +224,7 @@ public class WebPage extends WebPageBase
                 if(url.startsWith("/"))
                 {
                     url=SWBPlatform.getContextPath()+url;
-                }else
-                {
-                    //url=url.substring(1);
                 }
-                //System.out.println("url 2:"+url);
             }
             return url;
         }else if(getFriendlyURL()!=null)
@@ -258,7 +252,6 @@ public class WebPage extends WebPageBase
                     cg = a;
                     furl=friendlyURL;
                 }
-                //System.out.println(friendlyURL+" "+friendlyURL.getURL()+" "+friendlyURL.getLanguage()+" "+friendlyURL.getCountry()+" "+furl+" "+a+" "+cg+" "+user.getLanguage()+" "+user.getCountry());
                 if(a==6)break;
             }
             if(furl!=null)return SWBPlatform.getContextPath()+furl.getURL();
@@ -291,7 +284,6 @@ public class WebPage extends WebPageBase
      */
     public String getPath(HashMap args)
     {
-        //AFUtils.log("entra a nuevo topic getPath george...",true);
         StringBuilder ret = new StringBuilder();
         String separator = (String) args.get("separator");
         String cssclass = (String) args.get("cssclass");
@@ -336,10 +328,10 @@ public class WebPage extends WebPageBase
         }
 
         //Hidden Topics
-        ArrayList hd=null;
+        ArrayList<WebPage> hd=null;
         if(hiddentopics!=null)
         {
-            hd=new ArrayList();
+            hd=new ArrayList<>();
             StringTokenizer st=new StringTokenizer(hiddentopics," ,|;&:");
             while(st.hasMoreTokens())
             {
@@ -388,7 +380,7 @@ public class WebPage extends WebPageBase
             
         if (tphome != this)
         {
-            ArrayList arr = new ArrayList();
+            ArrayList<WebPage> arr = new ArrayList<>();
             WebPage tp=this.getParent();
             while (tp!=null)
             {
@@ -458,7 +450,7 @@ public class WebPage extends WebPageBase
         WebPage home=getWebSite().getHomePage();
         if (!home.equals(this))
         {
-            ArrayList arr = new ArrayList();
+            ArrayList<WebPage> arr = new ArrayList<>();
             WebPage tp = this.getParent();
             while (tp!=null)
             {
@@ -487,7 +479,7 @@ public class WebPage extends WebPageBase
     public boolean isChildof(WebPage page)
     {
         boolean ret=false;
-        ArrayList<WebPage> arr = new ArrayList();
+        ArrayList<WebPage> arr = new ArrayList<>();
         WebPage tp = this.getParent();
         while (tp!=null)
         {
@@ -589,7 +581,7 @@ public class WebPage extends WebPageBase
             {
                 return getDisplayName(language);
             }
-            ArrayList<WebPage> arr=new ArrayList();
+            ArrayList<WebPage> arr=new ArrayList<>();
             WebPage page=getParent();
             while(page!=null)
             {
@@ -649,38 +641,7 @@ public class WebPage extends WebPageBase
             return getDisplayDescription(language);
         }
     }        
-    
-    /**
-     * Lista templates activos y no borrados, si no existen en la pagina regresa las del padre.
-     * 
-     * @return true, if is on schedule
-     * @return
-     * 
-     * public Iterator<TemplateRef> listConfigTemplateRefs()
-     * {
-     * boolean inherit=true;
-     * ArrayList<TemplateRef> ret=new ArrayList();
-     * Iterator<TemplateRef> it=listTemplateRefs();
-     * while(it.hasNext())
-     * {
-     * TemplateRef ref=it.next();
-     * if(ref.isActive())
-     * {
-     * ret.add(ref);
-     * }
-     * }
-     * if(inherit && ret.size()==0)
-     * {
-     * WebPage parent=getParent();
-     * if(parent!=null)
-     * {
-     * return parent.listConfigTemplateRefs();
-     * }
-     * }
-     * return ret.iterator();
-     * }
-     */
-
+   
     public boolean isOnSchedule()
     {
         boolean ret=true;
@@ -706,7 +667,7 @@ public class WebPage extends WebPageBase
      */
     public Iterator<WebPage> listVisibleChilds(String sortLang)
     {
-        TreeSet set= new TreeSet(new SWBComparator(sortLang));
+        TreeSet<WebPage> set= new TreeSet<WebPage>(new SWBComparator(sortLang));
         Iterator<WebPage> it = listChilds();
         while (it.hasNext())
         {
@@ -756,8 +717,7 @@ public class WebPage extends WebPageBase
      */
     public Iterator<WebPage> listChilds(String sortLang, Boolean active, Boolean deleted, Boolean hidden, Boolean onSchedule, boolean incVirChilds)
     {
-        TreeSet set= new TreeSet(new SWBComparator(sortLang));
-        //set.addAll(getChild());
+        TreeSet<WebPage> set= new TreeSet<WebPage>(new SWBComparator(sortLang));
         Iterator<WebPage> it = listChilds();
         while (it.hasNext())
         {
@@ -808,15 +768,10 @@ public class WebPage extends WebPageBase
         return set.iterator();        
     }
     
-//    public void addHit(HttpServletRequest request, User user)
-//    {
-//        //TODO:
-//    }
-    
     /* (non-Javadoc)
- * @see org.semanticwb.model.base.WebPageBase#getDiskUsage()
- */
-@Override
+	 * @see org.semanticwb.model.base.WebPageBase#getDiskUsage()
+	 */
+    @Override
     public long getDiskUsage()
     {
         long ret=0;
@@ -890,8 +845,6 @@ public class WebPage extends WebPageBase
             timer = System.currentTimeMillis();
             setViews(views);
             viewed = false;
-            //System.out.println("******************************** Update WebPage ************************");
-            //System.out.println((char)7);
         }
     }
 
@@ -1027,7 +980,7 @@ public class WebPage extends WebPageBase
         if(description==null)description=(String)args.get("description");
         if(keywords==null)keywords=(String) args.get("keywords");
 
-        StringBuffer ret=new StringBuffer();
+        StringBuilder ret=new StringBuilder();
         if(author!=null)ret.append("<meta name=\"author\" content=\""+author+"\"/>\n");
         if(description!=null)ret.append("<meta name=\"description\" content=\""+description+"\"/>\n");
         if(keywords!=null)ret.append("<meta name=\"keywords\" content=\""+keywords+"\"/>\n");
@@ -1036,13 +989,11 @@ public class WebPage extends WebPageBase
     
     public String getInheritSecurityAction()
     {
-        //System.out.println("getInheritSecurityAction:"+this);
         return getInheritSecurityAction(new HashSet());
     }
     
     private String getInheritSecurityAction(Set set)
     {
-        //System.out.println("-->getInheritSecurityAction:"+this);
         if(set.contains(getURI()))return null;
         set.add(getURI());
         String action=getSecurityAction();
@@ -1084,7 +1035,4 @@ public class WebPage extends WebPageBase
         }
         return redirect;        
     }
-
-
-
 }

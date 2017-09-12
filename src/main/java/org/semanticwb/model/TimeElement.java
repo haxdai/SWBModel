@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,26 +18,20 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
-//~--- non-JDK imports --------------------------------------------------------
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticProperty;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.sql.Timestamp;
-
-import java.text.SimpleDateFormat;
-
-import javax.servlet.http.HttpServletRequest;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class TimeElement.
  */
@@ -79,20 +73,9 @@ public class TimeElement extends org.semanticwb.model.base.TimeElementBase {
             obj = new SemanticObject();
         }
 
-//        boolean IPHONE = false;
-//        boolean XHTML  = false;
-        boolean DOJO   = false;
+        boolean isDojo   = type.equals("dojo");
 
-//        if (type.equals("iphone")) {
-//            IPHONE = true;
-//        } else if (type.equals("xhtml")) {
-//            XHTML = true;
-//        } else
-        if (type.equals("dojo")) {
-            DOJO = true;
-        }
-
-        StringBuffer   ret      = new StringBuffer();
+        StringBuilder   ret      = new StringBuilder();
         String         name     = propName;
         String         label    = prop.getDisplayName(lang);
         SemanticObject sobj     = prop.getDisplayProperty();
@@ -109,7 +92,7 @@ public class TimeElement extends org.semanticwb.model.base.TimeElementBase {
             disabled = dobj.isDisabled();
         }
 
-        if (DOJO) {
+        if (isDojo) {
             if (imsg == null) {
                 if (required) {
                     imsg = label + " es requerido.";
@@ -142,17 +125,11 @@ public class TimeElement extends org.semanticwb.model.base.TimeElementBase {
         }
 
         String value = request.getParameter(propName);
-
-        if (value != null) {
-            //System.out.println("from request: " + value);
-        }
-
         if (value == null) {
             Timestamp dt = obj.getDateTimeProperty(prop);
 
             if (dt != null) {
                 value = format.format(dt);
-                //System.out.println("from model: " + value);
             }
         }
 
@@ -161,35 +138,27 @@ public class TimeElement extends org.semanticwb.model.base.TimeElementBase {
         }
 
         if (mode.equals("edit") || mode.equals("create")) {
-            ret.append("<input name=\"" + name + "\" value=\"" + (DOJO
+            ret.append("<input name=\"" + name + "\" value=\"" + (isDojo
                     ? "T"
                     : "") + value + "\"");
 
-            if (DOJO) {
+            if (isDojo) {
                 ret.append(" dojoType=\"dijit.form.TimeTextBox\"");
-            }
-
-            if (DOJO) {
                 if(required)ret.append(" required=\"" + required + "\"");
             }
 
-//          ret.append(" propercase=\"true\"");
-            if (DOJO) {
+            if (isDojo) {
                 ret.append(" promptMessage=\"" + pmsg + "\"");
-            }
-
-            // if(DOJO)ret.append(((getRegExp()!=null)?(" regExp=\""+getRegExp()+"\""):""));
-            if (DOJO) {
                 ret.append(" invalidMessage=\"" + imsg + "\"");
             }
 
-            if (DOJO && (getTimeConstraints() != null)) {
+            if (isDojo && (getTimeConstraints() != null)) {
                 ret.append(" constraints=\"" + getTimeConstraints() + "\"");
             }
 
             ret.append(" " + getAttributes());
 
-            if (DOJO) {
+            if (isDojo) {
                 ret.append(" trim=\"true\"");
             }
 
@@ -202,7 +171,6 @@ public class TimeElement extends org.semanticwb.model.base.TimeElementBase {
         return ret.toString();
     }
 
-    // TODO:borra
     /**
      * Gets the time constraints.
      * 
@@ -225,17 +193,12 @@ public class TimeElement extends org.semanticwb.model.base.TimeElementBase {
     @Override
     public void process(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName) {
 
-        // System.out.println("process...:"+obj.getURI()+" "+prop.getURI());
         if (prop.getDisplayProperty() == null) {
             return;
         }
 
         String value = request.getParameter(propName);
-
-        // System.out.println("com:"+old+"-"+value+"-");
         if ((value != null) && (value.length() > 0)) {
-
-            // System.out.println("old:"+old+" value:"+value);
             if (value.startsWith("T")) {
                 value = value.substring(1);
             }

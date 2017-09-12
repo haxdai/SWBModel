@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,19 +18,9 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
-
-//~--- non-JDK imports --------------------------------------------------------
-
-import org.semanticwb.SWBPlatform;
-import org.semanticwb.platform.SemanticClass;
-import org.semanticwb.platform.SemanticLiteral;
-import org.semanticwb.platform.SemanticObject;
-import org.semanticwb.platform.SemanticProperty;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,7 +28,12 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-// TODO: Auto-generated Javadoc
+import org.semanticwb.SWBPlatform;
+import org.semanticwb.platform.SemanticClass;
+import org.semanticwb.platform.SemanticLiteral;
+import org.semanticwb.platform.SemanticObject;
+import org.semanticwb.platform.SemanticProperty;
+
 /**
  * The Class SelectMultiple.
  */
@@ -65,11 +60,6 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
      */
     @Override
     public void process(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName) {
-
-        // super.process(request, obj, prop);
-        // System.out.println("Process...");
-        // System.out.println("Prop:"+prop);
-        // System.out.println("obj:"+obj);
         String vals[] = request.getParameterValues(propName);
 
         if (vals == null) {
@@ -85,8 +75,6 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
         } else {
             for (int x = 0; x < vals.length; x++) {
                 obj.addLiteralProperty(prop, new SemanticLiteral(vals[x]));
-
-                // System.out.println("val"+x+":"+vals[x]);
             }
         }
     }
@@ -112,20 +100,9 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
             obj = new SemanticObject();
         }
 
-////        boolean IPHONE = false;
-//        boolean XHTML  = false;
-        boolean DOJO   = false;
+        boolean isDojo = type.equals("dojo");
 
-//        if (type.equals("iphone")) {
-//            IPHONE = true;
-//        } else if (type.equals("xhtml")) {
-//            XHTML = true;
-//        } else
-        if (type.equals("dojo")) {
-            DOJO = true;
-        }
-
-        StringBuffer   ret          = new StringBuffer();
+        StringBuilder   ret          = new StringBuilder();
         String         name         = propName;
         String         label        = prop.getDisplayName(lang);
         SemanticObject sobj         = prop.getDisplayProperty();
@@ -144,7 +121,7 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
             disabled     = dobj.isDisabled();
         }
 
-        if (DOJO) {
+        if (isDojo) {
             if (imsg == null) {
                 if (required) {
                     imsg = label + " es requerido.";
@@ -177,7 +154,7 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
         }
 
         if (prop.isObjectProperty()) {
-            ArrayList<String> vals   = new ArrayList();
+            ArrayList<String> vals   = new ArrayList<>();
             String            auxs[] = request.getParameterValues(propName);
 
             if (auxs == null) {
@@ -192,8 +169,6 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
 
             while (it2.hasNext()) {
                 SemanticObject semanticObject = it2.next();
-
-                // System.out.println("semanticObject:"+semanticObject+" vals:"+vals);
                 vals.add(semanticObject.getURI());
             }
 
@@ -202,15 +177,9 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
             if (mode.equals("edit") || mode.equals("create")) {
                 ret.append("<select name=\"" + name + "\" multiple=\"true\"");
                 ret.append(" style=\"width:300px;\"");
-
-                if (DOJO) {
-                    //ret.append(" dojoType=\"dijit.form.MultiSelect\" invalidMessage=\"" + imsg + "\"");
-                }
-
                 ret.append(" " + ext + ">");
 
-                // onChange="dojo.byId('oc1').value=arguments[0]"
-                SemanticClass            cls = prop.getRangeClass();
+                SemanticClass cls = prop.getRangeClass();
                 Iterator<SemanticObject> it  = null;
 
                 if (isGlobalScope()) {
@@ -251,15 +220,9 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
             } else if (mode.equals("view")) {
                 ret.append("<select name=\"" + name + "\" multiple=\"true\"");
                 ret.append(" style=\"width:300px;\"");
-
-                if (DOJO) {
-                    //ret.append(" dojoType=\"dijit.form.MultiSelect\" invalidMessage=\"" + imsg + "\"");
-                }
-
                 ret.append(" disabled=\"disabled\">");
 
-                // onChange="dojo.byId('oc1').value=arguments[0]"
-                SemanticClass            cls = prop.getRangeClass();
+                SemanticClass cls = prop.getRangeClass();
                 Iterator<SemanticObject> it  = null;
 
                 if (isGlobalScope()) {
@@ -295,8 +258,8 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
             }
         } else {
             if (selectValues != null) {
-                ArrayList<String> vals   = new ArrayList();
-                String            auxs[] = request.getParameterValues(propName);
+                ArrayList<String> vals   = new ArrayList<>();
+                String auxs[] = request.getParameterValues(propName);
 
                 if (auxs == null) {
                     auxs = new String[0];
@@ -315,11 +278,6 @@ public class SelectMultiple extends org.semanticwb.model.base.SelectMultipleBase
                 }
 
                 ret.append("<select name=\"" + name + "\" multiple=\"true\"");
-
-                if (DOJO) {
-                    //ret.append(" dojoType=\"dijit.form.MultiSelect\" invalidMessage=\"" + imsg + "\"");
-                }
-
                 ret.append(" " + ext + ">");
 
                 StringTokenizer st = new StringTokenizer(selectValues, "|");

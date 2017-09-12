@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,25 +18,20 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
-
-//~--- non-JDK imports --------------------------------------------------------
-
-import org.semanticwb.SWBPlatform;
-import org.semanticwb.platform.SemanticClass;
-import org.semanticwb.platform.SemanticObject;
-import org.semanticwb.platform.SemanticProperty;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-// TODO: Auto-generated Javadoc
+import org.semanticwb.SWBPlatform;
+import org.semanticwb.platform.SemanticClass;
+import org.semanticwb.platform.SemanticObject;
+import org.semanticwb.platform.SemanticProperty;
+
 /**
  * The Class SelectTree.
  */
@@ -51,34 +46,16 @@ public class SelectTree extends org.semanticwb.model.base.SelectTreeBase {
         super(base);
     }
 
-/*
-    private String addPage(WebPage page, String selected, String lang, String separator)
-    {
-        String ret="<option value=\""+page.getURI()+"\" ";
-        if(page.getURI().equals(selected))ret+="selected";
-        ret+=">"+separator+page.getDisplayName(lang)+"</option>";
-
-        if(separator.length()==0)separator=">";
-
-        Iterator<WebPage> it=page.listVisibleChilds(lang);
-        while(it.hasNext())
-        {
-            WebPage child=it.next();
-            ret+=addPage(child,selected,lang,"--"+separator);
-        }
-        return ret;
-    }
-*/
-    /**
- * Adds the object.
- * 
- * @param obj the obj
- * @param selected the selected
- * @param lang the lang
- * @param separator the separator
- * @return the string
- */
-private String addObject(SemanticObject obj, String selected, String lang, String separator) {
+	/**
+	 * Adds the object.
+	 * 
+	 * @param obj the obj
+	 * @param selected the selected
+	 * @param lang the lang
+	 * @param separator the separator
+	 * @return the string
+	 */
+	private String addObject(SemanticObject obj, String selected, String lang, String separator) {
         String ret = "<option value=\"" + obj.getURI() + "\" ";
 
         if (obj.getURI().equals(selected)) {
@@ -95,7 +72,6 @@ private String addObject(SemanticObject obj, String selected, String lang, Strin
 
         while (it.hasNext()) {
             SemanticObject child = it.next();
-
             ret += addObject(child, selected, lang, "--" + separator);
         }
 
@@ -112,20 +88,9 @@ private String addObject(SemanticObject obj, String selected, String lang, Strin
             obj = new SemanticObject();
         }
 
-//        boolean IPHONE = false;
-//        boolean XHTML  = false;
-        boolean DOJO   = false;
+        boolean isDojo = type.equals("dojo");
 
-//        if (type.equals("iphone")) {
-//            IPHONE = true;
-//        } else if (type.equals("xhtml")) {
-//            XHTML = true;
-//        } else
-        if (type.equals("dojo")) {
-            DOJO = true;
-        }
-
-        StringBuffer   ret          = new StringBuffer();
+        StringBuilder   ret          = new StringBuilder();
         String         name         = propName;
         String         label        = prop.getDisplayName(lang);
         SemanticObject sobj         = prop.getDisplayProperty();
@@ -144,7 +109,7 @@ private String addObject(SemanticObject obj, String selected, String lang, Strin
             disabled     = dobj.isDisabled();
         }
 
-        if (DOJO) {
+        if (isDojo) {
             if (required && imsg == null) {
                 imsg = label + " es requerido.";
 
@@ -189,7 +154,7 @@ private String addObject(SemanticObject obj, String selected, String lang, Strin
             if (mode.equals("edit") || mode.equals("create")) {
                 ret.append("<select name=\"" + name + "\"");
 
-                if (DOJO) {
+                if (isDojo) {
                     ret.append(" dojoType=\"dijit.form.FilteringSelect\" autoComplete=\"true\" invalidMessage=\""
                                + imsg + "\"");
                 }
@@ -202,7 +167,6 @@ private String addObject(SemanticObject obj, String selected, String lang, Strin
 
                 ret.append(" " + ext + ">");
 
-                // onChange="dojo.byId('oc1').value=arguments[0]"
                 if (isBlankSuport()) {
                     ret.append("<option value=\"\"></option>");
                 }
@@ -229,7 +193,6 @@ private String addObject(SemanticObject obj, String selected, String lang, Strin
                         hp = cls.hasHerarquicalProperties();
                     }
 
-                    // System.out.println("cls:"+cls+" hp:"+hp+" "+cls.hasHerarquicalProperties()+" "+cls.hasInverseHerarquicalProperties());
                     while (it.hasNext()) {
                         SemanticObject sob = it.next();
                         
@@ -281,7 +244,7 @@ private String addObject(SemanticObject obj, String selected, String lang, Strin
 
                 ret.append("<select name=\"" + name + "\"");
 
-                if (DOJO) {
+                if (isDojo) {
                     ret.append(" dojoType=\"dijit.form.FilteringSelect\" autoComplete=\"true\" invalidMessage=\""
                                + imsg + "\"");
                 }

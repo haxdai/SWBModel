@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,17 +18,17 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.StringTokenizer;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.platform.SemanticClass;
-import org.semanticwb.platform.SemanticModel;
 import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticProperty;
 
@@ -61,20 +61,9 @@ public class SelectClass extends org.semanticwb.model.base.SelectClassBase
             obj = new SemanticObject();
         }
 
-//        boolean IPHONE = false;
-//        boolean XHTML  = false;
-        boolean DOJO   = false;
+        boolean isDojo = type.equals("dojo");
 
-//        if (type.equals("iphone")) {
-//            IPHONE = true;
-//        } else if (type.equals("xhtml")) {
-//            XHTML = true;
-//        } else
-        if (type.equals("dojo")) {
-            DOJO = true;
-        }
-
-        StringBuffer   ret          = new StringBuffer();
+        StringBuilder   ret          = new StringBuilder();
         String         name         = propName;
         String         label        = prop.getDisplayName(lang);
         SemanticObject sobj         = prop.getDisplayProperty();
@@ -93,12 +82,7 @@ public class SelectClass extends org.semanticwb.model.base.SelectClassBase
             disabled     = dobj.isDisabled();
         }
 
-/*
-        System.out.println("prop:"+prop);
-        System.out.println("sobj:"+sobj);
-        System.out.println("selectValues:"+selectValues);
-*/
-        if (DOJO)
+        if (isDojo)
         {
             if (imsg == null) {
                 if (required) {
@@ -153,7 +137,7 @@ public class SelectClass extends org.semanticwb.model.base.SelectClassBase
             if (mode.equals("edit") || mode.equals("create")) {
                 ret.append("<select name=\"" + name + "\"");
 
-                if (DOJO) {
+                if (isDojo) {
                     ret.append(" dojoType=\"dijit.form.FilteringSelect\" autoComplete=\"true\" invalidMessage=\""
                                + imsg + "\"");
                 }
@@ -172,11 +156,10 @@ public class SelectClass extends org.semanticwb.model.base.SelectClassBase
                 SemanticClass            cls = prop.getRangeClass();
                 Iterator<SemanticObject> it  = null;
 
-                Comparator comp=new Comparator<SemanticObject>()
+                Comparator<SemanticObject> comp=new Comparator<SemanticObject>()
                 {
                     public int compare(SemanticObject o1, SemanticObject o2)
                     {
-                        //System.out.println(o1+" "+o2);
                         String s1=o1.getResId();
                         String s2=o2.getResId();
                         return s1.compareTo(s2);
@@ -193,7 +176,6 @@ public class SelectClass extends org.semanticwb.model.base.SelectClassBase
                     while (it.hasNext()) {
                         SemanticObject sob = it.next();
 
-                        // System.out.println("display:"+sob.getDisplayName(lang));
                         if (sob.getURI() != null) {
                             ret.append("<option value=\"" + sob.getURI() + "\" ");
 

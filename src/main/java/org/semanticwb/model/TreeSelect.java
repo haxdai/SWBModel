@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,11 +18,12 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.semanticwb.Logger;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBUtils;
@@ -64,7 +65,7 @@ public class TreeSelect extends org.semanticwb.model.base.TreeSelectBase
 
     @Override
     public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type, String mode, String lang) {
-        StringBuffer ret = new StringBuffer(256);
+        StringBuilder ret = new StringBuilder(256);
         String style = "";
         StringBuilder params = new StringBuilder("");
 
@@ -101,7 +102,7 @@ public class TreeSelect extends org.semanticwb.model.base.TreeSelectBase
         }
 
         ret.append("<ul class=\"treeres\">");
-        ret.append("<li "+ styleActual+">"); //style=\"border-color:#6699FF; max-width:400px; min-width:200px;\" -----
+        ret.append("<li "+ styleActual+">");
 
         params.append("&" + home.getId() + "=0");
         ret.append("<img src=\"" + pathImages + "/plus.gif\" alt=\"abrir nodo\"  onclick=\"getHtml('" + url + "?site=" + home.getWebSiteId() + "&reptp=" + home.getId() + params + "&dataProp=" + dataProp + "&li=" + li + "&lang=" + lang + "','tree_'+'" + site.getId() + "_" + obj.getShortURI() + "_" + propName + "')\" />");

@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -25,7 +25,9 @@ package org.semanticwb.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.semanticwb.Logger;
 import org.semanticwb.SWBException;
 import org.semanticwb.SWBPlatform;
@@ -33,10 +35,9 @@ import org.semanticwb.SWBUtils;
 import org.semanticwb.platform.SemanticObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Resource.
  */
@@ -85,8 +86,6 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
      */
     public Resource(SemanticObject base) {
         super(base);
-        //System.out.println("Create Resource:"+base.getURI());
-        //new Exception().printStackTrace();
     }
 
     /**
@@ -241,7 +240,6 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
             }
         } catch (Exception e) {
             log.warn(e);
-            //log.error("Error in getAttribute: " + name + " ->Resource " + getId(), noe);
         }
         return ret;
     }
@@ -253,7 +251,7 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
      * @return the attribute names
      */
     public Iterator<String> getAttributeNames() {
-        ArrayList attributeNames = new ArrayList();
+        ArrayList<String> attributeNames = new ArrayList<>();
         try {
             Document dom = getDom();
             Node root = dom.getFirstChild();
@@ -301,15 +299,7 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
         }
     }
 
-    //    @Override
-    //    public void setXml(String xml)
-    //    {
-    //        //Garantiza que se borren las propiedades
-    //        getSemanticObject().getRDFResource().removeAll(swb_xml.getRDFProperty());
-    //        super.setXml(xml);
-    //        m_dom=null;
-    //    }
-        /**
+    /**
      * Adds the hit.
      *
      * @param request the request
@@ -318,7 +308,7 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
      */
     public void addHit(HttpServletRequest request, User user, WebPage page) 
     {
-        StringBuffer logbuf = new StringBuffer(300);
+        StringBuilder logbuf = new StringBuilder(300);
         logbuf.append("hit|");
         logbuf.append(request.getRemoteAddr());
         logbuf.append("|");
@@ -469,7 +459,6 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
      */
     public boolean evalFilterMap(WebPage topic) 
     {
-        //System.out.println("Resource:evalFilterMap:"+this+" "+this.getResourceType()+" "+this.getTitle()+" "+topic);
         ResourceFilter pfilter = getResourceFilter();
         if(pfilter==null)return true;
         else return pfilter.evalFilterMap(topic);
@@ -540,7 +529,6 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
         boolean ret = false;
         synchronized(this)
         {
-            //System.out.println("incViews:"+views);
             viewed = true;
             if (views == 0) {
                 views = getViews();
@@ -549,7 +537,6 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
             long t = System.currentTimeMillis() - timer;
             if (t > time || t < -time) {
                 //TODO: evalDate4Views();
-                //System.out.println("res:"+getId()+" t:"+t+" > " +time+" "+timer+" "+System.currentTimeMillis());
                 ret = true;
             }
         }
@@ -570,7 +557,6 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
      * Update views.
      */
     public void updateViews() {
-        //System.out.println("updateViews:"+views);
         if (viewed) {
             timer = System.currentTimeMillis();
             if (views > 0) {
@@ -580,8 +566,6 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
                 setHits(hits);
             }
             viewed = false;
-            //System.out.println("************************************** Update Resource "+ getId() +"-->"+ views +" "+timer+" ************************");
-            //System.out.println((char)7);
         }
     }
 

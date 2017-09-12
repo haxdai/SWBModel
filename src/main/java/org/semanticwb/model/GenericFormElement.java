@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,17 +18,18 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
-import org.semanticwb.model.base.*;
-import org.semanticwb.platform.SemanticObject;
-import org.semanticwb.platform.SemanticProperty;
 import java.util.StringTokenizer;
+
 import javax.servlet.http.HttpServletRequest;
 
-// TODO: Auto-generated Javadoc
+import org.semanticwb.model.base.FormElementBase;
+import org.semanticwb.platform.SemanticObject;
+import org.semanticwb.platform.SemanticProperty;
+
 /**
  * The Class GenericFormElement.
  */
@@ -71,20 +72,9 @@ public class GenericFormElement extends FormElementBase {
             obj = new SemanticObject();
         }
 
-        //boolean IPHONE = false;
-        //boolean XHTML  = false;
-        boolean DOJO   = false;
+        boolean isDojo = type.equals("dojo");
 
-//        if (type.equals("iphone")) {
-//            IPHONE = true;
-//        } else if (type.equals("xhtml")) {
-//            XHTML = true;
-//        } else
-        if (type.equals("dojo")) {
-            DOJO = true;
-        }
-
-        StringBuffer   ret          = new StringBuffer();
+        StringBuilder   ret          = new StringBuilder();
         String         name         = propName;
         String         label        = prop.getDisplayName(lang);
         SemanticObject sobj         = prop.getDisplayProperty();
@@ -105,7 +95,7 @@ public class GenericFormElement extends FormElementBase {
 
         String ext = "";
 
-        if (DOJO) {
+        if (isDojo) {
             if (imsg == null) {
                 if (prop.isDataTypeProperty() && prop.isNumeric()) {
                     imsg = getLocaleString("inv_number", lang);
@@ -153,7 +143,7 @@ public class GenericFormElement extends FormElementBase {
                     ret.append("<label for=\"" + name + id + "\">");
                     ret.append("<input");
 
-                    if (DOJO) {
+                    if (isDojo) {
                         ret.append(" dojoType=\"dijit.form.RadioButton\"");
                     }
 
@@ -188,24 +178,19 @@ public class GenericFormElement extends FormElementBase {
 
                 ret.append("<input type=\"checkbox\" id_=\"" + name + "\" name=\"" + name + "\" " + checked);
 
-                if (DOJO) {
+                if (isDojo) {
                     ret.append(" dojoType=\"dijit.form.CheckBox\"");
                 }
 
-                if (DOJO && required) {
+                if (isDojo && required) {
                     ret.append(" required=\"" + required + "\"");
                 }
 
-//              + " propercase=\"true\""
-                if (DOJO) {
+                if (isDojo) {
                     ret.append(" promptMessage=\"" + pmsg + "\"");
-                }
-
-                if (DOJO) {
                     ret.append(" invalidMessage=\"" + imsg + "\"");
                 }
 
-//              + " trim=\"true\""
                 ret.append(ext);
 
                 if (mode.equals("view")) {
@@ -239,40 +224,25 @@ public class GenericFormElement extends FormElementBase {
                 if (mode.equals("edit") || mode.equals("create") || mode.equals("filter")) {
                     ret.append("<input _id=\"" + name + "\" name=\"" + name + "\" value=\"" + value + "\"");
 
-                    if (DOJO) {
+                    if (isDojo) {
                         ret.append(" dojoType=\"dijit.form.ValidationTextBox\"");
-                    }
-
-                    if (DOJO) {
                         ret.append(" regExp=\"\\d+\"");
                     }
 
-                    if (!mode.equals("filter") && DOJO) {
+                    if (!mode.equals("filter") && isDojo) {
                         if(required)ret.append(" required=\"" + required + "\"");
                     }
 
-                    // + " propercase=\"true\""
-                    if (DOJO) {
+                    if (isDojo) {
                         ret.append(" promptMessage=\"" + pmsg + "\"");
-                    }
-
-                    if (DOJO) {
                         ret.append(" invalidMessage=\"" + imsg + "\"");
                     }
 
                     ret.append(" style=\"width:100px;\"");
                     ret.append(" " + getAttributes());
 
-                    // + " trim=\"true\""
                     ret.append(ext);
                     ret.append("/>");
-
-//                  }else if(mode.equals("edit"))
-//                  {
-//                      ret="<label for=\""+name+"\">"+label
-//                          + reqtxt
-//                          + "</label>"
-//                          + "<p><span _id=\""+name+"\" dojoType=\"dijit.InlineEditBox\" editor=\"dijit.form.ValidationTextBox\" editorParams=\"{regExp:'\\\\d+'}\" autoSave=\"false\" name=\""+name+"\">"+value+"</span></p>";
                 } else if (mode.equals("view")) {
                     ret.append("<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>");
                 }
@@ -287,34 +257,28 @@ public class GenericFormElement extends FormElementBase {
                     value = "";
                 }
 
-                //System.out.print(value);
                 value=value.replace("\"", "&quot;");
-                //System.out.println(" "+value);
 
                 if (mode.equals("edit") || mode.equals("create") || mode.equals("filter")) {
                     ret.append("<input _id=\"" + name + "\" name=\"" + name + "\" value=\"" + value + "\"");
 
-                    if (DOJO) {
+                    if (isDojo) {
                         ret.append(" dojoType=\"dijit.form.ValidationTextBox\"");
                     }
 
-                    if (!mode.equals("filter") || DOJO) {
+                    if (!mode.equals("filter") || isDojo) {
                         if(required)ret.append(" required=\"" + required + "\"");
                     }
 
-                    // + " propercase=\"true\""
-                    if (DOJO) {
+                    if (isDojo) {
                         ret.append(" promptMessage=\"" + pmsg + "\"");
-                    }
-
-                    if (DOJO) {
                         ret.append(" invalidMessage=\"" + imsg + "\"");
                     }
 
                     ret.append(" style=\"width:300px;\"");
                     ret.append(" " + getAttributes());
 
-                    if (DOJO) {
+                    if (isDojo) {
                         ret.append(" trim=\"true\"");
                     }
 
@@ -355,7 +319,6 @@ public class GenericFormElement extends FormElementBase {
             }
         }
 
-        // System.out.println("ret:"+ret);
         return ret.toString();
     }
 }

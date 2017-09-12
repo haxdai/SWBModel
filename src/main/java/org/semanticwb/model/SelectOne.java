@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,27 +18,22 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
-
-//~--- non-JDK imports --------------------------------------------------------
-
-import org.semanticwb.SWBPlatform;
-import org.semanticwb.model.base.*;
-import org.semanticwb.platform.SemanticClass;
-import org.semanticwb.platform.SemanticModel;
-import org.semanticwb.platform.SemanticObject;
-import org.semanticwb.platform.SemanticProperty;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-// TODO: Auto-generated Javadoc
+import org.semanticwb.SWBPlatform;
+import org.semanticwb.model.base.SelectOneBase;
+import org.semanticwb.platform.SemanticClass;
+import org.semanticwb.platform.SemanticModel;
+import org.semanticwb.platform.SemanticObject;
+import org.semanticwb.platform.SemanticProperty;
+
 /**
  * The Class SelectOne.
  */
@@ -74,20 +69,9 @@ public class SelectOne extends SelectOneBase {
             obj = new SemanticObject();
         }
 
-//        boolean IPHONE = false;
-//        boolean XHTML  = false;
-        boolean DOJO   = false;
+        boolean isDojo = type.equals("dojo");
 
-//        if (type.equals("iphone")) {
-//            IPHONE = true;
-//        } else if (type.equals("xhtml")) {
-//            XHTML = true;
-//        } else
-        if (type.equals("dojo")) {
-            DOJO = true;
-        }
-
-        StringBuffer   ret          = new StringBuffer();
+        StringBuilder   ret          = new StringBuilder();
         String         name         = propName;
         String         label        = prop.getDisplayName(lang);
         SemanticObject sobj         = prop.getDisplayProperty();
@@ -106,12 +90,7 @@ public class SelectOne extends SelectOneBase {
             disabled     = dobj.isDisabled();
         }
 
-/*
-        System.out.println("prop:"+prop);
-        System.out.println("sobj:"+sobj);
-        System.out.println("selectValues:"+selectValues);
-*/
-        if (DOJO) {
+        if (isDojo) {
             if (imsg == null) {
                 if (required) {
                     imsg = label + " es requerido.";
@@ -164,7 +143,7 @@ public class SelectOne extends SelectOneBase {
             if (mode.equals("edit") || mode.equals("create") || mode.equals("filter")) {
                 ret.append("<select name=\"" + name + "\"");
 
-                if (DOJO) {
+                if (isDojo) {
                     ret.append(" dojoType=\"dijit.form.FilteringSelect\" autoComplete=\"true\" invalidMessage=\""
                                + imsg + "\"" + " value=\""+uri+"\"");
                 }
@@ -180,15 +159,12 @@ public class SelectOne extends SelectOneBase {
 
                 ret.append(" " + ext + ">");
 
-                // onChange="dojo.byId('oc1').value=arguments[0]"
                 if ((mode.equals("filter") || isBlankSuport())) {
                     ret.append("<option");
-
-                    // if(uri==null || uri.length()==0)ret.append(" selected");
                     ret.append(" value=\"\"></option>");
                 }
 
-                SemanticClass            cls = prop.getRangeClass();
+                SemanticClass cls = prop.getRangeClass();
                 Iterator<SemanticObject> it  = null;
 
                 if (isGlobalScope()) {
@@ -200,17 +176,17 @@ public class SelectOne extends SelectOneBase {
                     }
                 } else if (isUserRepository()) {
                     SemanticModel model = getModel();
-                    SWBModel      m     = (SWBModel) model.getModelObject().createGenericInstance();
+                    SWBModel m = (SWBModel) model.getModelObject().createGenericInstance();
 
                     if (m instanceof WebSite) {
-                        m     = ((WebSite) m).getUserRepository();
+                        m = ((WebSite) m).getUserRepository();
                         model = m.getSemanticObject().getModel();
                     }
 
                     it = SWBComparator.sortSemanticObjects(lang, model.listInstancesOfClass(cls));
                 } else {
                     SemanticModel model = getModel();
-                    SWBModel      m     = (SWBModel) model.getModelObject().createGenericInstance();
+                    SWBModel m = (SWBModel) model.getModelObject().createGenericInstance();
                     if(m.getParentWebSite()!=null)m=m.getParentWebSite();                    
                     model = m.getSemanticModel();
                     
@@ -230,7 +206,6 @@ public class SelectOne extends SelectOneBase {
 
                         if(!deleted)
                         {
-                            // System.out.println("display:"+sob.getDisplayName(lang));
                             if (sob.getURI() != null) {
                                 ret.append("<option value=\"" + sob.getURI() + "\" ");
 
@@ -259,7 +234,7 @@ public class SelectOne extends SelectOneBase {
                 if (mode.equals("edit") || mode.equals("create")) {
                     ret.append("<select name=\"" + name + "\"");
 
-                    if (DOJO) {
+                    if (isDojo) {
                         ret.append(" dojoType=\"dijit.form.FilteringSelect\" autoComplete=\"true\" invalidMessage=\""
                                 + imsg + "\"");
                     }

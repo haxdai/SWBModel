@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,12 +18,12 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
 import javax.servlet.http.HttpServletRequest;
-import org.semanticwb.SWBPlatform;
+
 import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticProperty;
 
@@ -56,20 +56,9 @@ public class UrlFormElement extends org.semanticwb.model.base.UrlFormElementBase
             obj = new SemanticObject();
         }
 
-//        boolean IPHONE = false;
-//        boolean XHTML  = false;
-        boolean DOJO   = false;
+        boolean isDojo = type.equals("dojo");
 
-//        if (type.equals("iphone")) {
-//            IPHONE = true;
-//        } else if (type.equals("xhtml")) {
-//            XHTML = true;
-//        } else
-        if (type.equals("dojo")) {
-            DOJO = true;
-        }
-
-        StringBuffer   ret      = new StringBuffer();
+        StringBuilder ret      = new StringBuilder();
         String         name     = propName;
         String         label    = prop.getDisplayName(lang);
         SemanticObject sobj     = prop.getDisplayProperty();
@@ -86,7 +75,7 @@ public class UrlFormElement extends org.semanticwb.model.base.UrlFormElementBase
             disabled = dobj.isDisabled();
         }
 
-        if (DOJO) {
+        if (isDojo) {
             if (required && imsg == null) {
                 imsg = label + " es requerido.";
 
@@ -122,41 +111,28 @@ public class UrlFormElement extends org.semanticwb.model.base.UrlFormElementBase
 
         value=value.replace("\"", "&quot;");
 
-        // value=SWBUtils.TEXT.encodeExtendedCharacters(value);
-//      System.out.println("value:"+value);
-//      for(int x=0;x<value.length();x++)
-//      {
-//          System.out.println(" "+(int)value.charAt(x));
-//      }
         if (mode.equals("edit") || mode.equals("create")) {
             ret.append("<input name=\"" + name + "\" size=\"30\" value=\"" + value + "\"");
 
-            if (DOJO) {
+            if (isDojo) {
                 ret.append(" dojoType=\"dijit.form.ValidationTextBox\"");
-            }
-
-            if (DOJO) {
                 if(required)ret.append(" required=\"" + required + "\"");
             }
 
-//          ret.append(" propercase=\"true\"");
-            if (DOJO) {
+            if (isDojo) {
                 ret.append(" promptMessage=\"" + pmsg + "\"");
-            }
-
-            if (DOJO) {
                 ret.append(((getRegExp() != null)
                             ? (" regExp=\"" + getRegExp() + "\"")
                             : ""));
             }
 
-            if (DOJO) {
+            if (isDojo) {
                 ret.append(" invalidMessage=\"" + imsg + "\"");
             }
 
             ret.append(" " + getAttributes());
 
-            if (DOJO) {
+            if (isDojo) {
                 ret.append(" trim=\"true\"");
             }
 

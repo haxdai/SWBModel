@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -22,17 +22,12 @@
  */
 package org.semanticwb.model;
 
-//~--- non-JDK imports --------------------------------------------------------
+import javax.servlet.http.HttpServletRequest;
 
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticProperty;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import javax.servlet.http.HttpServletRequest;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class GMap.
  */
@@ -68,7 +63,7 @@ public class GMap extends org.semanticwb.model.base.GMapBase {
     public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type, String mode, String lang) {
         GMap map = null;
         String nombre = "";
-        StringBuffer ret = new StringBuffer();
+        StringBuilder ret = new StringBuilder();
         SemanticProperty prop2 = Geolocalizable.swb_longitude;
         SemanticProperty prop3 = Geolocalizable.swb_geoStep;
         if (obj == null)
