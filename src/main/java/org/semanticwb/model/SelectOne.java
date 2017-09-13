@@ -202,7 +202,7 @@ public class SelectOne extends SelectOneBase {
                             deleted=sob.getBooleanProperty(Trashable.swb_deleted);
                         }
                         
-                        if(filterObject(request, sobj, sob, prop, propName, type, mode, lang))continue;
+                        if(filterObject(request, obj, sobj, sob, prop, propName, type, mode, lang))continue;
 
                         if(!deleted)
                         {
@@ -290,10 +290,35 @@ public class SelectOne extends SelectOneBase {
         return ret.toString();
     }
     
-    
     public boolean filterObject(HttpServletRequest request, SemanticObject base_obj, SemanticObject filter_obj, SemanticProperty prop, String propName, String type,
                                 String mode, String lang)
     {
+        return filterObject(request, null, base_obj, filter_obj, prop, propName, type, mode, lang);
+    }
+    
+    public boolean filterObject(HttpServletRequest request, SemanticObject obj, SemanticObject base_obj, SemanticObject filter_obj, SemanticProperty prop, String propName, String type,
+                                String mode, String lang)
+    {
+        /*
+            System.out.println("*******************************");
+            System.out.println("model:"+getModel().getName());
+            System.out.println("obj:"+getSemanticObject());
+            System.out.println("obj:"+obj);
+            System.out.println("base_obj:"+base_obj);
+            System.out.println("filter_obj:"+filter_obj);
+            System.out.println("propName:"+propName);
+            System.out.println("type:"+type);
+            System.out.println("mode:"+mode);
+            System.out.println("*******************************");   
+        */
+        
+        if(obj!=null && prop.equals(Resource.swb_resourceSubType) && obj.instanceOf(Resource.sclass))
+        {
+            Resource res=(Resource)obj.getGenericInstance();
+            ResourceType rtype=res.getResourceType();
+            ResourceSubType subtype=(ResourceSubType)filter_obj.getGenericInstance();
+            if(!rtype.hasSubType(subtype))return true;
+        }
         return false;
     }
     
