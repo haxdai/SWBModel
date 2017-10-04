@@ -26,12 +26,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
-import org.semanticwb.SWBPlatform;
-import org.semanticwb.platform.SemanticClass;
-import org.semanticwb.platform.SemanticObject;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.semanticwb.platform.SemanticClass;
+import org.semanticwb.platform.SemanticObject;
+import org.semanticwb.SWBPlatform;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -160,7 +161,15 @@ public class AdminFilter extends org.semanticwb.model.base.AdminFilterBase {
                 {
                     String id = ele.getAttribute("id");
                     String model = ele.getAttribute("topicmap");
-                    WebPage page = SWBContext.getWebSite(model).getWebPage(id);
+                    WebPage page = null;
+                    //Try to get object by URI first
+                    GenericObject gobj = SWBPlatform.getSemanticMgr().getOntology().getGenericObject(model);
+                    if (null == gobj) {
+                        page = SWBContext.getWebSite(model).getWebPage(id);
+                    } else if (gobj instanceof WebSite) {
+                        page = ((WebSite)gobj).getWebPage(id);
+                    }
+                    //page = SWBContext.getWebSite(model).getWebPage(id);
                     if (page != null) {
                         pages.add(page);
                         addMenu(page.getParent());
@@ -187,7 +196,15 @@ public class AdminFilter extends org.semanticwb.model.base.AdminFilterBase {
                 if (val.startsWith("getTopic.")) {
                     String id = ele.getAttribute("id");
                     String model = ele.getAttribute("topicmap");
-                    WebPage page = SWBContext.getWebSite(model).getWebPage(id);
+                    
+                    WebPage page = null;
+                    //Try to get object by URI first
+                    GenericObject gobj = SWBPlatform.getSemanticMgr().getOntology().getGenericObject(model);
+                    if (null == gobj) {
+                        page = SWBContext.getWebSite(model).getWebPage(id);
+                    } else if (gobj instanceof WebSite) {
+                        page = ((WebSite)gobj).getWebPage(id);
+                    }
                     if (page != null) {
                         pages.add(page);
                     }
