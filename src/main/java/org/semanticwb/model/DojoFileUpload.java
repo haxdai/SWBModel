@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,7 +18,7 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.semanticwb.Logger;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBRuntimeException;
@@ -42,7 +44,7 @@ import org.semanticwb.util.UploaderFileCacheUtils;
 public class DojoFileUpload extends org.semanticwb.model.base.DojoFileUploadBase {
 
     /** The log. */
-    private static Logger log = SWBUtils.getLogger(DojoFileUpload.class);
+    private static Logger LOG = SWBUtils.getLogger(DojoFileUpload.class);
 
     /**
      * Instantiates a new dojo file upload.
@@ -59,16 +61,8 @@ public class DojoFileUpload extends org.semanticwb.model.base.DojoFileUploadBase
     @Override
     public String renderElement(HttpServletRequest request, SemanticObject obj,
             SemanticProperty prop, String propName, String type, String mode, String lang) {
-//        System.out.println("********************** DojoFileUploader.renderElement **********************");
-//        System.out.println("obj: "+obj);
-//        System.out.println("objuri: "+obj.getURI());
-//        System.out.println("prop: "+prop);
-//        System.out.println("type: "+type);
-//        System.out.println("mode: "+mode);
-//        System.out.println("lang: "+lang);
-//        System.out.println("objcls: "+obj.getSemanticClass());
-//        System.out.println("propcls: "+prop.getDomainClass());
-        if (null == obj) {
+
+    		if (null == obj) {
             throw new SWBRuntimeException("No Semantic Object present");
         }
 
@@ -88,15 +82,9 @@ public class DojoFileUpload extends org.semanticwb.model.base.DojoFileUploadBase
         UploadFileRequest ufq = configFileRequest(prop, pname);
         UploaderFileCacheUtils.putRequest(cad, ufq);
         request.getSession(true).setAttribute("fuCad", cad);
-//        String page;
-//        if (obj.instanceOf(WebPage.sclass)) {
-//            page = obj.getId();
-//        } else {
-//            page = ((WebSite) obj.getModel().getModelObject().getGenericInstance()).getHomePage().getId();
-//        }
+
         WebSite site;
         String url = SWBPlatform.getContextPath() + "/multiuploader/" + obj.getModel().getModelObject().getId() + "/home/" + cad;
-//        String enviar = lang.equals("en") ? "You have to send the selected files first" : "Debe enviar primero los archivos seleccionados";
         String eliminar = lang.equals("en") ? "Chose the files to delete" : "Selecione el(los) archivo(s) a eliminar";
         String loading = lang.equals("en") ? "Uploading file, please wait..." : "Cargando archivo, por favor espere...";
         String done = lang.equals("en") ? "Upload succesful" : "La carga del(los) archivo(s) tuvo éxito";
@@ -105,7 +93,6 @@ public class DojoFileUpload extends org.semanticwb.model.base.DojoFileUploadBase
         if (!"view".equals(mode)) {
             buffer.append("<input ").append("name=\"uploadedfile\" ").append("data-dojo-props=\" \n")
                     .append("multiple:'").append(prop.getCardinality() != 1 ? "true" : "false").append("', \n")
-                    //+ "force:'iframe', \n" 
                     .append("uploadOnSelect:'true', \n")
                     .append("url:'").append(url).append("', \n")
                     .append("submit: function(form) {}, \n")
@@ -180,7 +167,6 @@ public class DojoFileUpload extends org.semanticwb.model.base.DojoFileUploadBase
                 }
             }
         }
-        //System.out.println(buffer.toString());
         return buffer.toString();
     }
 
@@ -199,8 +185,6 @@ public class DojoFileUpload extends org.semanticwb.model.base.DojoFileUploadBase
                 request.getParameter(propName+"_new") != null ||
                 request.getParameter(pname ) != null)
             {
-            //        System.out.println("********************** FlashFileUploader.process **********************");
-            //        System.out.println(request.getParameter(pname + "_delFile"));
             if (request.getParameter(pname + "_delFile") != null) {
                 if (prop.getCardinality() != 1) {
                     Iterator<SemanticLiteral> list = obj.listLiteralProperties(prop);
@@ -223,7 +207,6 @@ public class DojoFileUpload extends org.semanticwb.model.base.DojoFileUploadBase
             }
             String cad = request.getParameter(propName+"_new");
             if (cad==null) cad = request.getParameter(pname);
-            //        System.out.println("Cadena:"+cad);
             List<UploadedFile> lista = UploaderFileCacheUtils.get(cad);
             for (UploadedFile arch : lista) {
                 File orig = new File(arch.getTmpuploadedCanonicalFileName());
@@ -253,20 +236,13 @@ public class DojoFileUpload extends org.semanticwb.model.base.DojoFileUploadBase
      * @return the upload file request
      */
     protected UploadFileRequest configFileRequest(SemanticProperty prop, String pname) {
-//        System.out.println("********************** FlashFileUploader.configFileRequest **********************");
-//        System.out.println("Tengo filtro "+getFileFilter()+"|--");
-//        System.out.println("*Prop:"+pname);
-//        System.out.println("*FileMaxSize:"+getFileMaxSize());
-
         boolean multiple = prop.getCardinality() != 1;
-        //System.out.println("filter:"+getFileFilter());
         HashMap<String, String> filtros = new HashMap<String, String>();
         if (null == getFileFilter() || "".equals(getFileFilter())) {
             filtros.put("All Files", "*.*");
         } else {
             String[] cads = getFileFilter().split("\\|");
             for (String line : cads) {
-//                System.out.println("cadena:"+line);
                 String[] parts = line.split(":");
                 filtros.put(parts[0], parts[1]);
             }

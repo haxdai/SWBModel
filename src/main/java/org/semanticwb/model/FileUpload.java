@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,259 +18,224 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
-//~--- non-JDK imports --------------------------------------------------------
+import javax.servlet.http.HttpServletRequest;
 
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticProperty;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import javax.servlet.http.HttpServletRequest;
-
-// TODO: Auto-generated Javadoc
 /**
- * Displays a fileupload form element (used when property is modeled at this form in an ontology).
+ * Displays a fileupload form element (used when property is modeled at this
+ * form in an ontology).
  * 
- * @author jorge.jimenez
+ * @author Jorge Jiménez {jorge.jimenez}
  */
 public class FileUpload extends org.semanticwb.model.base.FileUploadBase {
-    
-    /**
-     * Instantiates a new file upload.
-     * 
-     * @param base the base
-     */
-    public FileUpload(org.semanticwb.platform.SemanticObject base) {
-        super(base);
-    }
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.FormElementBase#renderElement(javax.servlet.http.HttpServletRequest, org.semanticwb.platform.SemanticObject, org.semanticwb.platform.SemanticProperty, java.lang.String, java.lang.String, java.lang.String)
-     */
-    /**
-     * Render element.
-     * 
-     * @param request the request
-     * @param obj the obj
-     * @param prop the prop
-     * @param type the type
-     * @param mode the mode
-     * @param lang the lang
-     * @return the string
-     */
-    @Override
-    public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type,
-                                String mode, String lang) {
-        if (obj == null) {
-            obj = new SemanticObject();
-        }
+	/**
+	 * Instantiates a new file upload.
+	 * 
+	 * @param base
+	 *            the base
+	 */
+	public FileUpload(org.semanticwb.platform.SemanticObject base) {
+		super(base);
+	}
 
-        String ret = "";
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.semanticwb.model.base.FormElementBase#renderElement(javax.servlet.http.
+	 * HttpServletRequest, org.semanticwb.platform.SemanticObject,
+	 * org.semanticwb.platform.SemanticProperty, java.lang.String, java.lang.String,
+	 * java.lang.String)
+	 */
+	/**
+	 * Render element.
+	 * 
+	 * @param request
+	 *            the request
+	 * @param obj
+	 *            the obj
+	 * @param prop
+	 *            the prop
+	 * @param type
+	 *            the type
+	 * @param mode
+	 *            the mode
+	 * @param lang
+	 *            the lang
+	 * @return the string
+	 */
+	@Override
+	public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName,
+			String type, String mode, String lang) {
+		
+		SemanticObject ob = obj;
+		if (obj == null) {
+			ob = new SemanticObject();
+		}
 
-        if (type.endsWith("iphone")) {
-            ret = renderIphone(request, obj, prop, propName, type, mode, lang);
-        } else {
-            ret = renderXHTML(request, obj, prop, propName, type, mode, lang);
-        }
+		return renderXHTML(request, ob, prop, propName, type, mode, lang);
+	}
 
-        return ret;
-    }
+	/**
+	 * @deprecated
+	 * Elements must be rendered using cross browser code. This method was 
+	 * implemented when browsers where not standardized.
+	 * Render iphone.
+	 * 
+	 * @param request
+	 *            the request
+	 * @param obj
+	 *            the obj
+	 * @param prop
+	 *            the prop
+	 * @param type
+	 *            the type
+	 * @param mode
+	 *            the mode
+	 * @param lang
+	 *            the lang
+	 * @return the string
+	 */
+	@Deprecated
+	public String renderIphone(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName,
+			String type, String mode, String lang) {
+		return "";
+	}
 
-    /**
-     * Render iphone.
-     * 
-     * @param request the request
-     * @param obj the obj
-     * @param prop the prop
-     * @param type the type
-     * @param mode the mode
-     * @param lang the lang
-     * @return the string
-     */
-    public String renderIphone(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type,
-                               String mode, String lang) {
-        return "";
-    }
+	/**
+	 * Render xhtml.
+	 * 
+	 * @param request
+	 *            the request
+	 * @param obj
+	 *            the obj
+	 * @param prop
+	 *            the prop
+	 * @param type
+	 *            the type
+	 * @param mode
+	 *            the mode
+	 * @param lang
+	 *            the lang
+	 * @return the string
+	 */
+	public String renderXHTML(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName,
+			String type, String mode, String lang) {
 
-    /**
-     * Render xhtml.
-     * 
-     * @param request the request
-     * @param obj the obj
-     * @param prop the prop
-     * @param type the type
-     * @param mode the mode
-     * @param lang the lang
-     * @return the string
-     */
-    public String renderXHTML(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type,
-                              String mode, String lang) {
+		String ret = "";
+		String name = propName;
+		String value = obj.getProperty(prop);
 
+		if (value == null) {
+			value = "";
+		}
 
-        // boolean DOJO=false;
-        // if(type.equals("dojo"))DOJO=true;
-        String         ret      = "";
-        String         name     = propName;
-        String         label    = prop.getDisplayName(lang);
-        SemanticObject sobj     = prop.getDisplayProperty();
-        boolean        required = prop.isRequired();
-        String         pmsg     = null;
-        String         imsg     = null;
+		if (mode.equals("edit") || mode.equals("create")) {
+			StringBuilder attchMsg = new StringBuilder();
+			String ext = "";
+			if (getFileFilter() != null)
+				ext = getFileFilter();
+			if (ext.trim().length() == 0 && request.getAttribute("extensions") != null)
+				ext = (String) request.getAttribute("extensions");
+			if (ext.trim().length() == 0)
+				ext = "jpg|jpeg|gif|png";
 
+			if ((name != null) && (request.getAttribute("attachCount_" + name) != null)) {
+				attchMsg.append(lang.equals("en") ? "Existing files" : "Archivo(s) existentes:")
+					.append("<br/>");
 
-        if (sobj != null) {
-            DisplayProperty dobj = new DisplayProperty(sobj);
+				int count = Integer.parseInt((String) request.getAttribute("attachCount_" + name));
 
-            pmsg = dobj.getDisplayPromptMessage(lang);
-            imsg = dobj.getDisplayInvalidMessage(lang);
-        }
+				for (int i = 1; i <= count; i++) {
+					String fileName = (String) request.getAttribute("attach_" + name + "_" + i);
+					int pos = fileName.lastIndexOf('/');
 
-        if (required && imsg == null) {
-            imsg = label + " es requerido.";
+					if (pos > -1) {
+						fileName = fileName.substring(pos + 1);
+					}
 
-            if (lang.equals("en")) {
-                imsg = label + " is required.";
-            }
-        }
+					String target = "";
 
-        if (pmsg == null) {
-            pmsg = "Captura " + label + ".";
+					if (request.getAttribute("attachTarget_" + name + "_" + i) != null) {
+						target = (String) request.getAttribute("attachTarget_" + name + "_" + i);
+					}
 
-            if (lang.equals("en")) {
-                pmsg = "Enter " + label + ".";
-            }
-        }
+					if (request.getAttribute("attachRemovePath_" + name + "_" + i) != null) {
+						attchMsg.append("<a href=\"").append(request.getAttribute("attachRemovePath_" + name + "_" + i))
+								.append("\">X</a> ");
+					}
 
-        String value = obj.getProperty(prop);
+					attchMsg.append(i).append(")<a href=\"").append(request.getAttribute("attach_" + name + "_" + i)).append("\" target=\"")
+							.append(target).append("\">").append(fileName).append("</a>")
+							.append("<br/>");
+				}
+			}
 
-        if (value == null) {
-            value = "";
-        }
+			String fileNotEmpty = lang.equals("en") ? "File field must not be empty"
+					: "El campo archivo no debe estar vacio";
+			String extAllowed = lang.equals("en") ? "Allowed extensions" : "Extensiones permitidas";
 
-      
-        if (mode.equals("edit") || mode.equals("create")) {
-            String attchMsg = "";
-            String ext= "";
-            if(getFileFilter()!=null) ext=getFileFilter();
-            if(ext.trim().length()==0 && request.getAttribute("extensions")!=null)  ext=(String)request.getAttribute("extensions");
-            if(ext.trim().length()==0)  ext= "jpg|jpeg|gif|png";
+			// Página ejemplo de
+			// implementación:http://blog.tremend.ro/2007/03/01/ajax-file-upload-monitoring-monitor-your-file-upload-with-dwr-and-commons-fileupload/
+			// Fecha de implemetación:26/Febrero/2009
+			// TODO:Haecer que este Bloque solo sea puesto una vez, independientemente de
+			// cuantos fileuploads tiene mi forma
+			ret = "<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"" + SWBPlatform.getContextPath()
+					+ "/swbadmin/css/upload/upload.css\"/>\n" + "<script type='text/javascript' src=\""
+					+ SWBPlatform.getContextPath() + "/dwr/util.js\"></script>\n"
+					+ "<script type='text/javascript' src=\"" + SWBPlatform.getContextPath()
+					+ "/dwr/engine.js\"></script>\n" + "<script type=\"text/javascript\" src=\""
+					+ SWBPlatform.getContextPath() + "/dwr/interface/uploadProxy.js\"></script>\n"
+					+ "<script type='text/javascript' src=\"" + SWBPlatform.getContextPath()
+					+ "/swbadmin/js/upload/upload.js\"></script>\n";
 
+			// TODO:Haecer que esta linea solo sea puesta una vez, independientemente de
+			// cuantos fileuploads tiene mi forma
+			ret += "<iframe id='target_upload_" + name + "' name='target_upload_" + name
+					+ "' src='' style='display: none'></iframe><br/>" + //
+					"<input type=\"hidden\" name=\"FUpLsize\" value=\"" + getFileMaxSize() + "\">" + attchMsg.toString()
+					+ "<input id=\"" + name + "\" name=\"" + name
+					+ "\" type=\"file\" onChange=\"javascript:if(uploadjs_" + name
+					+ "(this.form)) {return startUploadMonitoring('" + name + "');}\"> <br/>"
+					+ "<div id=\"uploadStatus_" + name + "\" style=\"width:230px\">\n"
+					+ "   <div id=\"uploadProgressBar_" + name
+					+ "\" style=\"width:200px; height: 2px; border: 0px solid #BBB; text-align: center; float: left;\">\n"
+					+ "       <div id=\"uploadIndicator_" + name
+					+ "\" style=\" height: 1px; position: relative; margin: 0px; padding: 1px; background: #9DC0F4; width: 0; float: left;\"></div>\n"
+					+ "   </div>\n" + "   <div id=\"uploadPercentage_" + name
+					+ "\" style=\"width:5px; float: right;\"></div>\n" + "</div>\n";
+			ret += "<script type=\"text/javascript\">\n" + "function uploadjs_" + name + "(forma){\n" + "if(forma."
+					+ name + ".value==''){alert('" + fileNotEmpty + "');forma." + name
+					+ ".focus(); return false;} if(!isFileType(forma." + name + ".value, '" + ext + "' ) ){ forma."
+					+ name + ".value=\"\"; return false; }" // TODO:Internacionalizar
+					+ "  var encoding=forma.encoding;\n" + "  forma.encoding='multipart/form-data';\n"
+					+ "  var method=forma.method;\n" + "  forma.method='post';\n" + "  var action=forma.action;\n"
+					+ "  forma.action='" + SWBPlatform.getContextPath() + "/Upload?FUpLsize=" + getFileMaxSize()
+					+ "';\n" + "  var target=forma.target;\n" + "  forma.target='target_upload_" + name + "';\n"
+					+ "  forma.submit();\n" + "  forma.encoding=encoding;\n" + "  forma.method=method;\n"
+					+ "  forma.action=action;\n" + "  forma.target=target;\n" + "  return true;\n" + "}\n"
+					+ " \nfunction isFileType(pFile, pExt)" + " \n{" + " \n   if(pFile.length > 0 && pExt.length > 0) "
+					+ " \n   {" + " \n      var swFormat=pExt + '|';"
+					+ " \n      sExt=pFile.substring(pFile.indexOf(\".\")).toLowerCase();" + " \n      var sType='';"
+					+ " \n      while(swFormat.length > 0 )" + " \n      {"
+					+ " \n         sType= swFormat.substring(0, swFormat.indexOf(\"|\"));"
+					+ " \n         if(sExt.indexOf(sType)!=-1) return true;"
+					+ " \n         swFormat=swFormat.substring(swFormat.indexOf(\"|\")+1);" + " \n      }"
+					+ " \n      while(pExt.indexOf(\"|\")!=-1) pExt=pExt.replace('|',',');" + " \n        alert('"
+					+ extAllowed + ": ' + pExt.replace('|',','));" + " \n      return false;" + " \n   }"
+					+ " \n   else return true;" + " \n}" + " </script>\n";
+		} else if (mode.equals("view")) {
+			ret = "<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>";
+		}
 
-            if ((name != null) && (request.getAttribute("attachCount_" + name) != null)) {
-                attchMsg = lang.equals("en")?"Existing files":"Archivo(s) existentes:";
-                attchMsg=attchMsg+"<br/>";
-
-
-
-                int count = Integer.parseInt((String) request.getAttribute("attachCount_" + name));
-
-                for (int i = 1; i <= count; i++) {
-                    String fileName = (String) request.getAttribute("attach_" + name + "_" + i);
-                    int    pos      = fileName.lastIndexOf("/");
-
-                    if (pos > -1) {
-                        fileName = fileName.substring(pos + 1);
-                    }
-
-                    String target = "";
-
-                    if (request.getAttribute("attachTarget_" + name + "_" + i) != null) {
-                        target = (String) request.getAttribute("attachTarget_" + name + "_" + i);
-                    }
-
-                    if (request.getAttribute("attachRemovePath_" + name + "_" + i) != null) {
-                        attchMsg += "<a href=\"" + request.getAttribute("attachRemovePath_" + name + "_" + i)
-                                    + "\">X</a> ";
-                    }
-
-                    attchMsg += i + ")<a href=\"" + request.getAttribute("attach_" + name + "_" + i) + "\" target=\""
-                                + target + "\">" + fileName + "</a>";
-                    attchMsg += "<br/>";
-                }
-            }
-
-            String formName = (String) request.getAttribute("formName");
-
-            String fileNotEmpty = lang.equals("en")?"File field must not be empty":"El campo archivo no debe estar vacio";
-            String extAllowed=lang.equals("en")?"Allowed extensions":"Extensiones permitidas";
-
-
-            // Página ejemplo de implementación:http://blog.tremend.ro/2007/03/01/ajax-file-upload-monitoring-monitor-your-file-upload-with-dwr-and-commons-fileupload/
-            // Fecha de implemetación:26/Febrero/2009
-            // TODO:Haecer que este Bloque solo sea puesto una vez, independientemente de cuantos fileuploads tiene mi forma
-            ret = "<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"" + SWBPlatform.getContextPath()
-                  + "/swbadmin/css/upload/upload.css\"/>\n" + "<script type='text/javascript' src=\""
-                  + SWBPlatform.getContextPath() + "/dwr/util.js\"></script>\n"
-                  + "<script type='text/javascript' src=\"" + SWBPlatform.getContextPath()
-                  + "/dwr/engine.js\"></script>\n" + "<script type=\"text/javascript\" src=\""
-                  + SWBPlatform.getContextPath() + "/dwr/interface/uploadProxy.js\"></script>\n"
-                  + "<script type='text/javascript' src=\"" + SWBPlatform.getContextPath()
-                  + "/swbadmin/js/upload/upload.js\"></script>\n";
-
-            // TODO:Haecer que esta linea solo sea puesta una vez, independientemente de cuantos fileuploads tiene mi forma
-//            ret += "<iframe id='target_upload_" + name + "' name='target_upload_" + name
-//                   + "' src='' style='display: none'></iframe><br/>" +    //
-//                attchMsg + "<input id=\"" + name + "\" name=\"" + name
-//                    + "\" type=\"file\" onChange=\"javascript:if(uploadjs_" + name + "(document.getElementById('"
-//                    + formName + "'))) {return startUploadMonitoring('" + name + "');}\"> <br/>"
-//                    + "<div id=\"uploadStatus_" + name + "\" style=\"width:230px\">\n"
-//                    + "   <div id=\"uploadProgressBar_" + name
-//                    + "\" style=\"width:200px; height: 2px; border: 0px solid #BBB; text-align: center; float: left;\">\n"
-//                    + "       <div id=\"uploadIndicator_" + name
-//                    + "\" style=\" height: 1px; position: relative; margin: 0px; padding: 1px; background: #9DC0F4; width: 0; float: left;\"></div>\n"
-//                    + "   </div>\n" + "   <div id=\"uploadPercentage_" + name
-//                    + "\" style=\"width:5px; float: right;\"></div>\n" + "</div>\n";
-            ret += "<iframe id='target_upload_" + name + "' name='target_upload_" + name
-                   + "' src='' style='display: none'></iframe><br/>" +    //
-                   "<input type=\"hidden\" name=\"FUpLsize\" value=\""+getFileMaxSize()+"\">"+
-                attchMsg + "<input id=\"" + name + "\" name=\"" + name
-                    + "\" type=\"file\" onChange=\"javascript:if(uploadjs_" + name + "(this.form)) {return startUploadMonitoring('" + name + "');}\"> <br/>"
-                    + "<div id=\"uploadStatus_" + name + "\" style=\"width:230px\">\n"
-                    + "   <div id=\"uploadProgressBar_" + name
-                    + "\" style=\"width:200px; height: 2px; border: 0px solid #BBB; text-align: center; float: left;\">\n"
-                    + "       <div id=\"uploadIndicator_" + name
-                    + "\" style=\" height: 1px; position: relative; margin: 0px; padding: 1px; background: #9DC0F4; width: 0; float: left;\"></div>\n"
-                    + "   </div>\n" + "   <div id=\"uploadPercentage_" + name
-                    + "\" style=\"width:5px; float: right;\"></div>\n" + "</div>\n";
-            ret += "<script type=\"text/javascript\">\n" + "function uploadjs_" + name + "(forma){\n" + "if(forma."
-                   + name + ".value==''){alert('"+fileNotEmpty+"');forma." + name
-                   + ".focus(); return false;} if(!isFileType(forma." + name+".value, '"+ ext +"' ) ){ forma." + name+ ".value=\"\"; return false; }"     // TODO:Internacionalizar
-                    +"  var encoding=forma.encoding;\n" + "  forma.encoding='multipart/form-data';\n"
-                    + "  var method=forma.method;\n" + "  forma.method='post';\n" + "  var action=forma.action;\n"
-                    + "  forma.action='" + SWBPlatform.getContextPath() + "/Upload?FUpLsize="+getFileMaxSize()+"';\n"
-                    + "  var target=forma.target;\n" + "  forma.target='target_upload_" + name + "';\n"
-                    + "  forma.submit();\n" + "  forma.encoding=encoding;\n" + "  forma.method=method;\n"
-                    + "  forma.action=action;\n" + "  forma.target=target;\n" + "  return true;\n" + "}\n"
-                    + " \nfunction isFileType(pFile, pExt)"
-                    + " \n{"
-                    + " \n   if(pFile.length > 0 && pExt.length > 0) "
-                    + " \n   {"
-                    + " \n      var swFormat=pExt + '|';"
-                    + " \n      sExt=pFile.substring(pFile.indexOf(\".\")).toLowerCase();"
-                    + " \n      var sType='';"
-                    + " \n      while(swFormat.length > 0 )"
-                    + " \n      {"
-                    + " \n         sType= swFormat.substring(0, swFormat.indexOf(\"|\"));"
-                    + " \n         if(sExt.indexOf(sType)!=-1) return true;"
-                    + " \n         swFormat=swFormat.substring(swFormat.indexOf(\"|\")+1);"
-                    + " \n      }"
-                    + " \n      while(pExt.indexOf(\"|\")!=-1) pExt=pExt.replace('|',',');"
-                    + " \n        alert('"+extAllowed+": ' + pExt.replace('|',','));"
-                    + " \n      return false;"
-                    + " \n   }"
-                    + " \n   else return true;"
-                    + " \n}"
-                    + " </script>\n";
-        } else if (mode.equals("view")) {
-            ret = "<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>";
-        }
-
-        return ret;
-    }
+		return ret;
+	}
 }
-

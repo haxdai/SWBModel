@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,101 +18,93 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-import org.semanticwb.model.base.*;
-import org.semanticwb.platform.SemanticObject;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.semanticwb.model.base.DnsBase;
+import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticObserver;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Dns.
  */
 public class Dns extends DnsBase {
-    
-    /** The names. */
-    private static ConcurrentHashMap<String, Dns> names = null;
 
-    static
-    {
-        sclass.registerObserver(new SemanticObserver() {
+	/** The names. */
+	private static ConcurrentHashMap<String, Dns> names = null;
 
-            public void notify(SemanticObject obj, Object prop, String lang, String action)
-            {
-                names=null;
-            }
-        });
-    }
+	static {
+		sclass.registerObserver(new SemanticObserver() {
 
-    /**
-     * Instantiates a new dns.
-     * 
-     * @param base the base
-     */
-    public Dns(SemanticObject base) {
-        super(base);
-    }
+			public void notify(SemanticObject obj, Object prop, String lang, String action) {
+				names = null;
+			}
+		});
+	}
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.DnsBase#setDefault(boolean)
-     */
-    @Override
-    public void setDefault(boolean dnsDefault) {
-        super.setDefault(dnsDefault);
+	/**
+	 * Instantiates a new dns.
+	 * 
+	 * @param base
+	 *            the base
+	 */
+	public Dns(SemanticObject base) {
+		super(base);
+	}
 
-        Iterator<Dns> it = getWebSite().listDnses();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.base.DnsBase#setDefault(boolean)
+	 */
+	@Override
+	public void setDefault(boolean dnsDefault) {
+		super.setDefault(dnsDefault);
 
-        while (it.hasNext()) {
-            Dns d = it.next();
+		Iterator<Dns> it = getWebSite().listDnses();
 
-            if (!d.equals(this) && d.isDefault()) {
-                d.setDefault(false);
-            }
-        }
-    }
+		while (it.hasNext()) {
+			Dns d = it.next();
 
-    /**
-     * Refresh.
-     */
-    synchronized public static void refresh() {
-        if(names==null)
-        {
-            names = new ConcurrentHashMap();
-            Iterator<Dns> it = ClassMgr.listDnses();
+			if (!d.equals(this) && d.isDefault()) {
+				d.setDefault(false);
+			}
+		}
+	}
 
-            while (it.hasNext())
-            {
-                Dns dns = it.next();
-                if(dns.getDns()!=null)
-                {
-                    names.put(dns.getDns(), dns);
-                }
-            }
-        }
-    }
+	/**
+	 * Refresh.
+	 */
+	public synchronized static void refresh() {
+		if (names == null) {
+			names = new ConcurrentHashMap<>();
+			Iterator<Dns> it = ClassMgr.listDnses();
 
-    /**
-     * Gets the dns.
-     * 
-     * @param serverName the server name
-     * @return the dns
-     */
-    public static Dns getDns(String serverName) {
-        if (names == null) {
-            refresh();
-        }
-        return names.get(serverName);
-    }
+			while (it.hasNext()) {
+				Dns dns = it.next();
+				if (dns.getDns() != null) {
+					names.put(dns.getDns(), dns);
+				}
+			}
+		}
+	}
 
+	/**
+	 * Gets the dns.
+	 * 
+	 * @param serverName
+	 *            the server name
+	 * @return the dns
+	 */
+	public static Dns getDns(String serverName) {
+		if (names == null) {
+			refresh();
+		}
+		return names.get(serverName);
+	}
 
 }

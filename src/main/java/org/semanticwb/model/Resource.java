@@ -18,7 +18,7 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
@@ -43,541 +43,575 @@ import org.w3c.dom.NodeList;
  */
 public class Resource extends org.semanticwb.model.base.ResourceBase {
 
-    /** The log. */
-    private static Logger log = SWBUtils.getLogger(Resource.class);
-    
-    /** The siteid. */
-    private String siteid = null;
-    
-    /** The randpriority. */
-    protected int randpriority;
-    
-    /** The hits. */
-    private long hits = 0;
-    
-    /** The views. */
-    private long views = 0;
-    
-    /** The timer. */
-    private long timer=System.currentTimeMillis();                     //valores de sincronizacion de views, hits
-    
-    /** The time. */
-    private static long time;               //tiempo en milisegundos por cada actualizacion
-    
-    /** The viewed. */
-    private boolean viewed = false;
-    
-    /** The rand. */
-    private static Random rand = new Random();
+	/** The log. */
+	private static Logger log = SWBUtils.getLogger(Resource.class);
 
-    static {
-        time = 600000L;
-        try {
-            time = 1000L * Long.parseLong((String) SWBPlatform.getEnv("swb/accessLogTime", "600"));
-        } catch (Exception e) {
-            log.error("Error to read accessLogTime...", e);
-        }
-    }
+	/** The siteid. */
+	private String siteid = null;
 
-    /**
-     * Instantiates a new resource.
-     * 
-     * @param base the base
-     */
-    public Resource(SemanticObject base) {
-        super(base);
-    }
+	/** The randpriority. */
+	protected int randpriority;
 
-    /**
-     * Gets the web site id.
-     * 
-     * @return the web site id
-     */
-    public String getWebSiteId() {
-        if (siteid == null) {
-            siteid = getWebSite().getId();
-        }
-        return siteid;
-    }
+	/** The hits. */
+	private long hits = 0;
 
-    /**
-     * Checks if is cached.
-     * 
-     * @return true, if is cached
-     */
-    public boolean isCached() {
-        boolean ret = false;
-        if (getResourceType().getResourceCache() > 0) {
-            ret = true;
-        }
-        return ret;
-    }
+	/** The views. */
+	private long views = 0;
 
-    /**
-     * Refresh rand priority.
-     */
-    public void refreshRandPriority() {
-        //TODO:
-        //if (this.getCamp() == 1)
-        //    randpriority = SWBPriorityCalculator.getInstance().calcPriority(0);
-        //else if (this.getCamp() == 2)
-        //    randpriority = WBUtils.getInstance().calcPriority(6);
-        //else
-        randpriority = calcPriority(getPriority());
-    }
+	/** The timer. */
+	private long timer = System.currentTimeMillis(); // valores de sincronizacion de views, hits
 
-    /**
-     * Calc priority.
-     * 
-     * @param p the p
-     * @return the int
-     */
-    private int calcPriority(int p) {
-        int ret = 0;
-        if (p == 0) {
-            ret = 0;
-        } else if (p == 1) {
-            ret = 1;
-        } else if (p == 5) {
-            ret = 50;
-        } else if (p > 5) {
-            ret = 60;
-        } else {
-            ret = rand.nextInt(10 * p) + 1;
-        }
-        return ret;
-    }
+	/** The time. */
+	private static long time; // tiempo en milisegundos por cada actualizacion
 
-    /**
-     * Sets the rand priority.
-     * 
-     * @param randpriority the new rand priority
-     */
-    public void setRandPriority(int randpriority) {
-        this.randpriority = randpriority;
-    }
+	/** The viewed. */
+	private boolean viewed = false;
 
-    /**
-     * Gets the rand priority.
-     * 
-     * @return the rand priority
-     * @return
-     */
-    public int getRandPriority() {
-        return randpriority;
-    }
+	/** The rand. */
+	private static Random rand = new Random();
 
-    /**
-     * Gets the dom.
-     * 
-     * @return the dom
-     */
-    public Document getDom() {
-        return getSemanticObject().getDomProperty(swb_xml);
-    }
+	static {
+		time = 600000L;
+		try {
+			time = 1000L * Long.parseLong((String) SWBPlatform.getEnv("swb/accessLogTime", "600"));
+		} catch (Exception e) {
+			log.error("Error to read accessLogTime...", e);
+		}
+	}
 
-    /**
-     * Gets the dom conf.
-     * 
-     * @return the dom conf
-     */
-    public Document getDomConf() {
-        return getSemanticObject().getDomProperty(swb_xmlConf);
-    }
+	/**
+	 * Instantiates a new resource.
+	 * 
+	 * @param base
+	 *            the base
+	 */
+	public Resource(SemanticObject base) {
+		super(base);
+	}
 
-    /** Asigna un atributo al DOM del recurso.
-     * Si no existe el atributo, lo crea y si existe lo modifica
-     * @param name String nombre del atributo
-     * @param value String valor del atributo
-     */
-    public void setAttribute(String name, String value) {
-        try {
-            Document dom = getDom();
-            Element res = (Element) dom.getFirstChild();
-            if (res == null) {
-                Element ele = dom.createElement("resource");
-                dom.appendChild(ele);
-            }
-            SWBUtils.XML.setAttribute(dom, name, value);
-        } catch (Exception e) {
-            log.error("Error in setAttribute: " + name + " ->Resource " + getId(), e);
-        }
-    }
+	/**
+	 * Gets the web site id.
+	 * 
+	 * @return the web site id
+	 */
+	public String getWebSiteId() {
+		if (siteid == null) {
+			siteid = getWebSite().getId();
+		}
+		return siteid;
+	}
 
-    /**
-     * Lee un atributo del DOM del Recurso
-     * Si el atributo no esta declarado regresa el valor por defecto defvalue.
-     * 
-     * @param name the name
-     * @param defvalue the defvalue
-     * @return the attribute
-     */
-    public String getAttribute(String name, String defvalue) {
-        String ret = getAttribute(name);
-        if (ret == null) {
-            ret = defvalue;
-        }
-        return ret;
-    }
+	/**
+	 * Checks if is cached.
+	 * 
+	 * @return true, if is cached
+	 */
+	public boolean isCached() {
+		boolean ret = false;
+		if (getResourceType().getResourceCache() > 0) {
+			ret = true;
+		}
+		return ret;
+	}
 
-    /**
-     * Lee un atributo del DOM del Recurso
-     * Si el atributo no esta declarado regresa null.
-     * 
-     * @param name the name
-     * @return the attribute
-     */
-    public String getAttribute(String name) {
-        String ret = null;
-        try {
-            Document dom = getDom();
-            NodeList data = dom.getElementsByTagName(name);
-            if (data.getLength() > 0) {
-                Node txt = data.item(0).getFirstChild();
-                if (txt != null) {
-                    ret = txt.getNodeValue();
-                }
-            }
-        } catch (Exception e) {
-            log.warn(e);
-        }
-        return ret;
-    }
+	/**
+	 * Refresh rand priority.
+	 */
+	public void refreshRandPriority() {
+		randpriority = calcPriority(getPriority());
+	}
 
-    /**
-     * Lee un atributo del DOM del Recurso
-     * Si el atributo no esta declarado regresa iterador vacio.
-     * 
-     * @return the attribute names
-     */
-    public Iterator<String> getAttributeNames() {
-        ArrayList<String> attributeNames = new ArrayList<>();
-        try {
-            Document dom = getDom();
-            Node root = dom.getFirstChild();
+	/**
+	 * Calc priority.
+	 * 
+	 * @param p
+	 *            the p
+	 * @return the int
+	 */
+	private int calcPriority(int p) {
+		int ret = 0;
+		if (p == 0) {
+			ret = 0;
+		} else if (p == 1) {
+			ret = 1;
+		} else if (p == 5) {
+			ret = 50;
+		} else if (p > 5) {
+			ret = 60;
+		} else {
+			ret = rand.nextInt(10 * p) + 1;
+		}
+		return ret;
+	}
 
-            NodeList data = root.getChildNodes();
-            for (int x = 0; x < data.getLength(); x++) {
-                attributeNames.add(data.item(x).getNodeName());
-            }
-        } catch (Exception e) {
-            log.warn(e);
-        }
-        return attributeNames.iterator();
-    }
+	/**
+	 * Sets the rand priority.
+	 * 
+	 * @param randpriority
+	 *            the new rand priority
+	 */
+	public void setRandPriority(int randpriority) {
+		this.randpriority = randpriority;
+	}
 
-    /**
-     * Borra un atributo del DOM del Recurso.
-     * 
-     * @param name the name
-     */
-    public void removeAttribute(String name) {
-        try {
-            Document dom = getDom();
-            Node res = dom.getFirstChild();
-            NodeList data = dom.getElementsByTagName(name);
-            if (data.getLength() > 0) {
-                res.removeChild(data.item(0));
-            }
-        } catch (Exception e) {
-            log.error("Error in removeAttribute: " + name + " ->Resource " + getId(), e);
-        }
-    }
+	/**
+	 * Gets the rand priority.
+	 * 
+	 * @return the rand priority
+	 * @return
+	 */
+	public int getRandPriority() {
+		return randpriority;
+	}
 
-    /**
-     * Actualiza los atributos del DOM a base de datos.
-     * 
-     * @throws SWBException the sWB exception
-     */
-    public void updateAttributesToDB() throws SWBException {
-        Document dom = getDom();
-        if (dom != null) {
-            String xml = SWBUtils.XML.domToXml(dom);
-            if (xml != null && !xml.equals(getXml())) {
-                setXml(xml);
-            }
-        }
-    }
+	/**
+	 * Gets the dom.
+	 * 
+	 * @return the dom
+	 */
+	public Document getDom() {
+		return getSemanticObject().getDomProperty(swb_xml);
+	}
 
-    /**
-     * Adds the hit.
-     *
-     * @param request the request
-     * @param user the user
-     * @param page the page
-     */
-    public void addHit(HttpServletRequest request, User user, WebPage page) 
-    {
-        StringBuilder logbuf = new StringBuilder(300);
-        logbuf.append("hit|");
-        logbuf.append(request.getRemoteAddr());
-        logbuf.append("|");
-        logbuf.append(SWBPlatform.getMessageCenter().getAddress());
-        logbuf.append("|");
-        String sess=request.getSession().getId();
-        if(sess!=null)
-        {
-            int p=sess.length()-10;
-            if(p>-1)sess=sess.substring(p);
-        }else sess="_";
-        logbuf.append(sess);        
-        logbuf.append("|");
-        logbuf.append(page.getWebSite().getId());
-        logbuf.append("|");
-        logbuf.append(page.getId());
-        logbuf.append("|");
-        logbuf.append(user.getUserRepository().getId());
-        logbuf.append("|");
-        if (user.getLogin() != null)
-            logbuf.append(user.getLogin());
-        else
-            logbuf.append("_");
-        logbuf.append("|");
-        logbuf.append(user.getSemanticObject().getSemanticClass().getClassId());
-        logbuf.append("|");
-        logbuf.append(user.getDevice());
-        logbuf.append("|");
-        if (user.getLanguage() != null && user.getLanguage().length() > 0)
-            logbuf.append(user.getLanguage());
-        else
-            logbuf.append("_");
-        logbuf.append("|");
-        logbuf.append(getId());
-        SWBPlatform.getMessageCenter().sendMessage(logbuf.toString());
-    }
+	/**
+	 * Gets the dom conf.
+	 * 
+	 * @return the dom conf
+	 */
+	public Document getDomConf() {
+		return getSemanticObject().getDomProperty(swb_xmlConf);
+	}
 
-    /**
-     * Gets the data.
-     * 
-     * @return the data
-     * @return
-     */
-    public String getData() {
-        return getProperty("data");
-    }
+	/**
+	 * Asigna un atributo al DOM del recurso. Si no existe el atributo, lo crea y si
+	 * existe lo modifica
+	 * 
+	 * @param name
+	 *            String nombre del atributo
+	 * @param value
+	 *            String valor del atributo
+	 */
+	public void setAttribute(String name, String value) {
+		try {
+			Document dom = getDom();
+			Element res = (Element) dom.getFirstChild();
+			if (res == null) {
+				Element ele = dom.createElement("resource");
+				dom.appendChild(ele);
+			}
+			SWBUtils.XML.setAttribute(dom, name, value);
+		} catch (Exception e) {
+			log.error("Error in setAttribute: " + name + " ->Resource " + getId(), e);
+		}
+	}
 
-    /**
-     * Gets the data.
-     * 
-     * @param key the key
-     * @return the data
-     */
-    public String getData(String key) {
-        return getProperty("data/" + key);
-    }
+	/**
+	 * Lee un atributo del DOM del Recurso Si el atributo no esta declarado regresa
+	 * el valor por defecto defvalue.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param defvalue
+	 *            the defvalue
+	 * @return the attribute
+	 */
+	public String getAttribute(String name, String defvalue) {
+		String ret = getAttribute(name);
+		if (ret == null) {
+			ret = defvalue;
+		}
+		return ret;
+	}
 
-    /**
-     * Sets the data.
-     * 
-     * @param data the new data
-     */
-    public void setData(String data) {
-        setProperty("data", data);
-    }
+	/**
+	 * Lee un atributo del DOM del Recurso Si el atributo no esta declarado regresa
+	 * null.
+	 * 
+	 * @param name
+	 *            the name
+	 * @return the attribute
+	 */
+	public String getAttribute(String name) {
+		String ret = null;
+		try {
+			Document dom = getDom();
+			NodeList data = dom.getElementsByTagName(name);
+			if (data.getLength() > 0) {
+				Node txt = data.item(0).getFirstChild();
+				if (txt != null) {
+					ret = txt.getNodeValue();
+				}
+			}
+		} catch (Exception e) {
+			log.warn(e);
+		}
+		return ret;
+	}
 
-    /**
-     * Sets the data.
-     * 
-     * @param key the key
-     * @param data the data
-     */
-    public void setData(String key, String data) {
-        setProperty("data/" + key, data);
-    }
+	/**
+	 * Lee un atributo del DOM del Recurso Si el atributo no esta declarado regresa
+	 * iterador vacio.
+	 * 
+	 * @return the attribute names
+	 */
+	public Iterator<String> getAttributeNames() {
+		ArrayList<String> attributeNames = new ArrayList<>();
+		try {
+			Document dom = getDom();
+			Node root = dom.getFirstChild();
 
-    /**
-     * Gets the data.
-     * 
-     * @param usr the usr
-     * @return the data
-     * @return
-     */
-    public String getData(User usr) {
-        return getProperty("data/usr/" + usr.getUserRepository().getId() + "/" + usr.getId());
-    }
+			NodeList data = root.getChildNodes();
+			for (int x = 0; x < data.getLength(); x++) {
+				attributeNames.add(data.item(x).getNodeName());
+			}
+		} catch (Exception e) {
+			log.warn(e);
+		}
+		return attributeNames.iterator();
+	}
 
-    /**
-     * Sets the data.
-     * 
-     * @param usr the usr
-     * @param data the data
-     */
-    public void setData(User usr, String data) {
-        setProperty("data/usr/" + usr.getUserRepository().getId() + "/" + usr.getId(), data);
-    }
+	/**
+	 * Borra un atributo del DOM del Recurso.
+	 * 
+	 * @param name
+	 *            the name
+	 */
+	public void removeAttribute(String name) {
+		try {
+			Document dom = getDom();
+			Node res = dom.getFirstChild();
+			NodeList data = dom.getElementsByTagName(name);
+			if (data.getLength() > 0) {
+				res.removeChild(data.item(0));
+			}
+		} catch (Exception e) {
+			log.error("Error in removeAttribute: " + name + " ->Resource " + getId(), e);
+		}
+	}
 
-    /**
-     * Gets the data.
-     * 
-     * @param usr the usr
-     * @param page the page
-     * @return the data
-     * @return
-     */
-    public String getData(User usr, WebPage page) {
-        return getProperty("data/usr/" + usr.getUserRepository().getId() + "/" + usr.getId() + "/wp/" + page.getWebSiteId() + "/" + page.getId());
-    }
+	/**
+	 * Actualiza los atributos del DOM a base de datos.
+	 * 
+	 * @throws SWBException
+	 *             the sWB exception
+	 */
+	public void updateAttributesToDB() {
+		Document dom = getDom();
+		if (dom != null) {
+			String xml = SWBUtils.XML.domToXml(dom);
+			if (xml != null && !xml.equals(getXml())) {
+				setXml(xml);
+			}
+		}
+	}
 
-    /**
-     * Sets the data.
-     * 
-     * @param usr the usr
-     * @param page the page
-     * @param data the data
-     */
-    public void setData(User usr, WebPage page, String data) {
-        setProperty("data/usr/" + usr.getUserRepository().getId() + "/" + usr.getId() + "/wp/" + page.getWebSiteId() + "/" + page.getId(), data);
-    }
+	/**
+	 * Adds the hit.
+	 *
+	 * @param request
+	 *            the request
+	 * @param user
+	 *            the user
+	 * @param page
+	 *            the page
+	 */
+	public void addHit(HttpServletRequest request, User user, WebPage page) {
+		StringBuilder logbuf = new StringBuilder(300);
+		logbuf.append("hit|");
+		logbuf.append(request.getRemoteAddr());
+		logbuf.append("|");
+		logbuf.append(SWBPlatform.getMessageCenter().getAddress());
+		logbuf.append("|");
+		String sess = request.getSession().getId();
+		if (sess != null) {
+			int p = sess.length() - 10;
+			if (p > -1)
+				sess = sess.substring(p);
+		} else
+			sess = "_";
+		logbuf.append(sess);
+		logbuf.append("|");
+		logbuf.append(page.getWebSite().getId());
+		logbuf.append("|");
+		logbuf.append(page.getId());
+		logbuf.append("|");
+		logbuf.append(user.getUserRepository().getId());
+		logbuf.append("|");
+		if (user.getLogin() != null)
+			logbuf.append(user.getLogin());
+		else
+			logbuf.append("_");
+		logbuf.append("|");
+		logbuf.append(user.getSemanticObject().getSemanticClass().getClassId());
+		logbuf.append("|");
+		logbuf.append(user.getDevice());
+		logbuf.append("|");
+		if (user.getLanguage() != null && user.getLanguage().length() > 0)
+			logbuf.append(user.getLanguage());
+		else
+			logbuf.append("_");
+		logbuf.append("|");
+		logbuf.append(getId());
+		SWBPlatform.getMessageCenter().sendMessage(logbuf.toString());
+	}
 
-    /**
-     * Gets the data.
-     * 
-     * @param page the page
-     * @return the data
-     * @return
-     */
-    public String getData(WebPage page) {
-        return getProperty("data/wp/" + page.getWebSiteId() + "/" + page.getId());
-    }
+	/**
+	 * Gets the data.
+	 * 
+	 * @return the data
+	 * @return
+	 */
+	public String getData() {
+		return getProperty("data");
+	}
 
-    /**
-     * Sets the data.
-     * 
-     * @param page the page
-     * @param data the data
-     */
-    public void setData(WebPage page, String data) {
-        setProperty("data/wp/" + page.getWebSiteId() + "/" + page.getId(), data);
-    }
+	/**
+	 * Gets the data.
+	 * 
+	 * @param key
+	 *            the key
+	 * @return the data
+	 */
+	public String getData(String key) {
+		return getProperty("data/" + key);
+	}
 
-    /**
-     * Evalua el filtro de secciones
-     * 
-     * @param topic the topic
-     * @return true, if successful
-     * @return
-     */
-    public boolean evalFilterMap(WebPage topic) 
-    {
-        ResourceFilter pfilter = getResourceFilter();
-        if(pfilter==null)return true;
-        else return pfilter.evalFilterMap(topic);
-    }    
+	/**
+	 * Sets the data.
+	 * 
+	 * @param data
+	 *            the new data
+	 */
+	public void setData(String data) {
+		setProperty("data", data);
+	}
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.ResourceBase#getHits()
-     */
-    @Override
-    public long getHits() {
-        if (hits == 0) {
-            hits = super.getHits();
-        }
-        return hits;
-    }
+	/**
+	 * Sets the data.
+	 * 
+	 * @param key
+	 *            the key
+	 * @param data
+	 *            the data
+	 */
+	public void setData(String key, String data) {
+		setProperty("data/" + key, data);
+	}
 
-    /**
-     * Inc hits.
-     * 
-     * @return true, if successful
-     */
-    public boolean incHits() {
-        boolean ret = false;
-        synchronized(this)
-        {
-            viewed = true;
-            if (hits == 0) {
-                hits = getHits();
-            }
-            hits += 1;
-            long t = System.currentTimeMillis() - timer;
-            if (t > time || t < -time) {
-                //TODO: evalDate4Views();
-                ret = true;
-            }
-        }
-        return ret;
-    }
+	/**
+	 * Gets the data.
+	 * 
+	 * @param usr
+	 *            the usr
+	 * @return the data
+	 * @return
+	 */
+	public String getData(User usr) {
+		return getProperty("data/usr/" + usr.getUserRepository().getId() + "/" + usr.getId());
+	}
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.ResourceBase#setHits(long)
-     */
-    @Override
-    public void setHits(long hits) {
-        super.setHits(hits);
-        this.hits = hits;
-    }
+	/**
+	 * Sets the data.
+	 * 
+	 * @param usr
+	 *            the usr
+	 * @param data
+	 *            the data
+	 */
+	public void setData(User usr, String data) {
+		setProperty("data/usr/" + usr.getUserRepository().getId() + "/" + usr.getId(), data);
+	}
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.ResourceBase#getViews()
-     */
-    @Override
-    public long getViews() {
-        if (views == 0) {
-            views = super.getViews();
-        }
-        return views;
-    }
+	/**
+	 * Gets the data.
+	 * 
+	 * @param usr
+	 *            the usr
+	 * @param page
+	 *            the page
+	 * @return the data
+	 * @return
+	 */
+	public String getData(User usr, WebPage page) {
+		return getProperty("data/usr/" + usr.getUserRepository().getId() + "/" + usr.getId() + "/wp/"
+				+ page.getWebSiteId() + "/" + page.getId());
+	}
 
-    /**
-     * Inc views.
-     * 
-     * @return true, if successful
-     */
-    public boolean incViews() 
-    {
+	/**
+	 * Sets the data.
+	 * 
+	 * @param usr
+	 *            the usr
+	 * @param page
+	 *            the page
+	 * @param data
+	 *            the data
+	 */
+	public void setData(User usr, WebPage page, String data) {
+		setProperty("data/usr/" + usr.getUserRepository().getId() + "/" + usr.getId() + "/wp/" + page.getWebSiteId()
+				+ "/" + page.getId(), data);
+	}
 
-        boolean ret = false;
-        synchronized(this)
-        {
-            viewed = true;
-            if (views == 0) {
-                views = getViews();
-            }
-            views += 1;
-            long t = System.currentTimeMillis() - timer;
-            if (t > time || t < -time) {
-                //TODO: evalDate4Views();
-                ret = true;
-            }
-        }
-        return ret;
-    }
+	/**
+	 * Gets the data.
+	 * 
+	 * @param page
+	 *            the page
+	 * @return the data
+	 * @return
+	 */
+	public String getData(WebPage page) {
+		return getProperty("data/wp/" + page.getWebSiteId() + "/" + page.getId());
+	}
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.ResourceBase#setViews(long)
-     */
-    @Override
-    public void setViews(long views) {
-        //System.out.println("setViews:"+views);
-        super.setViews(views);
-        this.views = views;
-    }
+	/**
+	 * Sets the data.
+	 * 
+	 * @param page
+	 *            the page
+	 * @param data
+	 *            the data
+	 */
+	public void setData(WebPage page, String data) {
+		setProperty("data/wp/" + page.getWebSiteId() + "/" + page.getId(), data);
+	}
 
-    /**
-     * Update views.
-     */
-    public void updateViews() {
-        if (viewed) {
-            timer = System.currentTimeMillis();
-            if (views > 0) {
-                setViews(views);
-            }
-            if (hits > 0) {
-                setHits(hits);
-            }
-            viewed = false;
-        }
-    }
+	/**
+	 * Evalua el filtro de secciones
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @return true, if successful
+	 * @return
+	 */
+	public boolean evalFilterMap(WebPage topic) {
+		ResourceFilter pfilter = getResourceFilter();
+		if (pfilter == null)
+			return true;
+		else
+			return pfilter.evalFilterMap(topic);
+	}
 
-    @Override
-    public boolean isValid() {
-        boolean ret=super.isValid();
-        Resourceable resourceable=getResourceable();
-        if(ret && resourceable!=null && resourceable instanceof SWBClass) ret=((SWBClass)resourceable).isValid();
-        if(ret)ret=getResourceType().isValid();
-        if(ret && getResourceSubType()!=null)ret=getResourceSubType().isValid();
-        return ret;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.base.ResourceBase#getHits()
+	 */
+	@Override
+	public long getHits() {
+		if (hits == 0) {
+			hits = super.getHits();
+		}
+		return hits;
+	}
 
+	/**
+	 * Inc hits.
+	 * 
+	 * @return true, if successful
+	 */
+	public boolean incHits() {
+		boolean ret = false;
+		synchronized (this) {
+			viewed = true;
+			if (hits == 0) {
+				hits = getHits();
+			}
+			hits += 1;
+			long t = System.currentTimeMillis() - timer;
+			if (t > time || t < -time) {
+				// TODO: evalDate4Views();
+				ret = true;
+			}
+		}
+		return ret;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.base.ResourceBase#setHits(long)
+	 */
+	@Override
+	public void setHits(long hits) {
+		super.setHits(hits);
+		this.hits = hits;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.base.ResourceBase#getViews()
+	 */
+	@Override
+	public long getViews() {
+		if (views == 0) {
+			views = super.getViews();
+		}
+		return views;
+	}
+
+	/**
+	 * Inc views.
+	 * 
+	 * @return true, if successful
+	 */
+	public boolean incViews() {
+
+		boolean ret = false;
+		synchronized (this) {
+			viewed = true;
+			if (views == 0) {
+				views = getViews();
+			}
+			views += 1;
+			long t = System.currentTimeMillis() - timer;
+			if (t > time || t < -time) {
+				// TODO: evalDate4Views();
+				ret = true;
+			}
+		}
+		return ret;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.base.ResourceBase#setViews(long)
+	 */
+	@Override
+	public void setViews(long views) {
+		super.setViews(views);
+		this.views = views;
+	}
+
+	/**
+	 * Update views.
+	 */
+	public void updateViews() {
+		if (viewed) {
+			timer = System.currentTimeMillis();
+			if (views > 0) {
+				setViews(views);
+			}
+			if (hits > 0) {
+				setHits(hits);
+			}
+			viewed = false;
+		}
+	}
+
+	@Override
+	public boolean isValid() {
+		boolean ret = super.isValid();
+		Resourceable resourceable = getResourceable();
+		if (ret && resourceable != null && resourceable instanceof SWBClass)
+			ret = ((SWBClass) resourceable).isValid();
+		if (ret)
+			ret = getResourceType().isValid();
+		if (ret && getResourceSubType() != null)
+			ret = getResourceSubType().isValid();
+		return ret;
+	}
 
 }

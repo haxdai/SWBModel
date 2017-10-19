@@ -25,6 +25,7 @@ package org.semanticwb.model;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticProperty;
    /**
@@ -33,10 +34,10 @@ import org.semanticwb.platform.SemanticProperty;
    */
 public class BooleanElement extends org.semanticwb.model.base.BooleanElementBase 
 {
-	private final String PROP_DISABLED = " disabled=\"disabled\" ";
-	private final String PROP_CHECKED = "checked=\"checked\" ";
-	private final String PROP_PROMPT = " promptMessage=\"";
-	private final String PROP_INVALIDMSG = " invalidMessage=\"";
+	private final static String PROP_DISABLED = " disabled=\"disabled\" ";
+	private final static String PROP_CHECKED = "checked=\"checked\" ";
+	private final static String PROP_PROMPT = " promptMessage=\"";
+	private final static String PROP_INVALIDMSG = " invalidMessage=\"";
 	private HashMap<String, String> formElementparams = null; 
 	
     public BooleanElement(org.semanticwb.platform.SemanticObject base)

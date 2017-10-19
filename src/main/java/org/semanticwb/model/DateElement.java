@@ -36,181 +36,207 @@ import org.semanticwb.platform.SemanticProperty;
  * The Class DateElement.
  */
 public class DateElement extends org.semanticwb.model.base.DateElementBase {
-    
-    /** The log. */
-    private static Logger log = SWBUtils.getLogger(DateElement.class);
-    
-    /** The format. */
-    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-    /**
-     * Instantiates a new date element.
-     * 
-     * @param base the base
-     */
-    public DateElement(org.semanticwb.platform.SemanticObject base) {
-        super(base);
-    }
+	/** The log. */
+	private static Logger log = SWBUtils.getLogger(DateElement.class);
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.FormElementBase#renderElement(javax.servlet.http.HttpServletRequest, org.semanticwb.platform.SemanticObject, org.semanticwb.platform.SemanticProperty, java.lang.String, java.lang.String, java.lang.String)
-     */
-    /**
-     * Render element.
-     * 
-     * @param request the request
-     * @param obj the obj
-     * @param prop the prop
-     * @param type the type
-     * @param mode the mode
-     * @param lang the lang
-     * @return the string
-     */
-    @Override
-    public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type,
-                                String mode, String lang) {
-        if (obj == null) {
-            obj = new SemanticObject();
-        }
+	/** The format. */
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-        boolean isDojo = type.equals("dojo");
+	/**
+	 * Instantiates a new date element.
+	 * 
+	 * @param base
+	 *            the base
+	 */
+	public DateElement(org.semanticwb.platform.SemanticObject base) {
+		super(base);
+	}
 
-        StringBuilder ret      = new StringBuilder();
-        String         name     = propName;
-        String         label    = prop.getDisplayName(lang);
-        SemanticObject sobj     = prop.getDisplayProperty();
-        boolean        required = prop.isRequired();
-        String         pmsg     = null;
-        String         imsg     = null;
-        boolean        disabled = false;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.semanticwb.model.base.FormElementBase#renderElement(javax.servlet.http.
+	 * HttpServletRequest, org.semanticwb.platform.SemanticObject,
+	 * org.semanticwb.platform.SemanticProperty, java.lang.String, java.lang.String,
+	 * java.lang.String)
+	 */
+	/**
+	 * Render element.
+	 * 
+	 * @param request
+	 *            the request
+	 * @param obj
+	 *            the obj
+	 * @param prop
+	 *            the prop
+	 * @param type
+	 *            the type
+	 * @param mode
+	 *            the mode
+	 * @param lang
+	 *            the lang
+	 * @return the string
+	 */
+	@Override
+	public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName,
+			String type, String mode, String lang) {
+		SemanticObject ob = obj;
+		if (obj == null) {
+			ob = new SemanticObject();
+		}
 
-        if (sobj != null) {
-            DisplayProperty dobj = new DisplayProperty(sobj);
+		boolean isDojo = type.equals("dojo");
 
-            pmsg = dobj.getDisplayPromptMessage(lang);
-            imsg = dobj.getDisplayInvalidMessage(lang);
-            disabled = dobj.isDisabled();
-        }
+		StringBuilder ret = new StringBuilder();
+		String name = propName;
+		String label = prop.getDisplayName(lang);
+		SemanticObject sobj = prop.getDisplayProperty();
+		boolean required = prop.isRequired();
+		String pmsg = null;
+		String imsg = null;
+		boolean disabled = false;
 
-        if (isDojo) {
-            if (imsg == null) {
-                if (required) {
-                    imsg = label + " es requerido.";
+		if (sobj != null) {
+			DisplayProperty dobj = new DisplayProperty(sobj);
 
-                    if (lang.equals("en")) {
-                        imsg = label + " is required.";
-                    }
-                } else {
-                    imsg = "Formato invalido.";
+			pmsg = dobj.getDisplayPromptMessage(lang);
+			imsg = dobj.getDisplayInvalidMessage(lang);
+			disabled = dobj.isDisabled();
+		}
 
-                    if (lang.equals("en")) {
-                        imsg = "Invalid Format.";
-                    }
-                }
-            }
+		if (isDojo) {
+			if (imsg == null) {
+				if (required) {
+					imsg = label + " es requerido.";
 
-            if (pmsg == null) {
-                pmsg = "Captura " + label + ".";
+					if (lang.equals("en")) {
+						imsg = label + " is required.";
+					}
+				} else {
+					imsg = "Formato invalido.";
 
-                if (lang.equals("en")) {
-                    pmsg = "Enter " + label + ".";
-                }
-            }
-        }
+					if (lang.equals("en")) {
+						imsg = "Invalid Format.";
+					}
+				}
+			}
 
-        String ext = "";
+			if (pmsg == null) {
+				pmsg = "Captura " + label + ".";
 
-        if (disabled) {
-            ext += " disabled=\"disabled\"";
-        }
+				if (lang.equals("en")) {
+					pmsg = "Enter " + label + ".";
+				}
+			}
+		}
 
-        String value = request.getParameter(propName);
+		String ext = "";
 
-        if (value == null) {
-            Date dt = obj.getDateProperty(prop);
+		if (disabled) {
+			ext += " disabled=\"disabled\"";
+		}
 
-            if (dt != null) {
-                value = format.format(dt);
-            }
-        }
+		String value = request.getParameter(propName);
 
-        if (value == null) {
-            value = "";
-        }
+		if (value == null) {
+			Date dt = ob.getDateProperty(prop);
 
-        if (mode.equals("edit") || mode.equals("create")) {
-            ret.append("<input name=\"" + name + "\" value=\"" + value + "\"");
+			if (dt != null) {
+				value = format.format(dt);
+			}
+		}
 
-            if (isDojo) {
-                ret.append(" dojoType=\"dijit.form.DateTextBox\"");
-                if(required)ret.append(" required=\"" + required + "\"");
-                ret.append(" promptMessage=\"" + pmsg + "\"");
-                ret.append(" invalidMessage=\"" + imsg + "\"");
+		if (value == null) {
+			value = "";
+		}
 
-                if (getConstraints() != null) {
-                    ret.append(" constraints=\"" + getConstraints() + "\"");
-                }
-                
-                if(getDateId()!=null) ret.append(" id=\"" + getDateId() + "\"");
-                if(getDateOnChange()!=null) ret.append(" onchange=\"" + getDateOnChange() + "\"");
-            }
+		if (mode.equals("edit") || mode.equals("create")) {
+			ret.append("<input name=\"" + name + "\" value=\"" + value + "\"");
 
-            ret.append(" " + getAttributes());
+			if (isDojo) {
+				ret.append(" dojoType=\"dijit.form.DateTextBox\"");
+				if (required)
+					ret.append(" required=\"" + required + "\"");
+				ret.append(" promptMessage=\"" + pmsg + "\"");
+				ret.append(" invalidMessage=\"" + imsg + "\"");
 
-            if (isDojo) {
-                ret.append(" trim=\"true\"");
-            }
+				if (getConstraints() != null) {
+					ret.append(" constraints=\"" + getConstraints() + "\"");
+				}
 
-            ret.append(ext);
-            ret.append("/>");
-        } else if (mode.equals("view")) {
-            ret.append("<span name=\"" + name + "\">" + value + "</span>");
-        }
+				if (getDateId() != null)
+					ret.append(" id=\"" + getDateId() + "\"");
+				if (getDateOnChange() != null)
+					ret.append(" onchange=\"" + getDateOnChange() + "\"");
+			}
 
-        return ret.toString();
-    }
+			ret.append(" " + getAttributes());
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.FormElementBase#process(javax.servlet.http.HttpServletRequest, org.semanticwb.platform.SemanticObject, org.semanticwb.platform.SemanticProperty)
-     */
-    /**
-     * Process.
-     * 
-     * @param request the request
-     * @param obj the obj
-     * @param prop the prop
-     */
-    @Override
-    public void process(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName) {
-        if (prop.getDisplayProperty() != null) {
-            String value = request.getParameter(propName);
-            String old   = obj.getProperty(prop);
+			if (isDojo) {
+				ret.append(" trim=\"true\"");
+			}
 
-            if (value != null) {
-                if ((value.length() > 0) &&!value.equals(old)) {
-                    try {
-                        obj.setDateProperty(prop, format.parse(value));
-                    } catch (Exception e) {
-                        log.error(e);
-                    }
-                } else if ((value.length() == 0) && (old != null)) {
-                    obj.removeProperty(prop);
-                }
-            }
-        }
-    }
+			ret.append(ext);
+			ret.append("/>");
+		} else if (mode.equals("view")) {
+			ret.append("<span name=\"" + name + "\">" + value + "</span>");
+		}
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.DateElementBase#getConstraints()
-     */
-    @Override
-    public String getConstraints() {
-        String ret = super.getConstraints();
+		return ret.toString();
+	}
 
-        if (ret != null) {
-            ret = SWBUtils.TEXT.replaceAll(ret, "{today}", SWBUtils.TEXT.getStrDate(new Date(), "es", "yyyy-mm-dd"));    // 2006-12-31
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.base.FormElementBase#process(javax.servlet.http.
+	 * HttpServletRequest, org.semanticwb.platform.SemanticObject,
+	 * org.semanticwb.platform.SemanticProperty)
+	 */
+	/**
+	 * Process.
+	 * 
+	 * @param request
+	 *            the request
+	 * @param obj
+	 *            the obj
+	 * @param prop
+	 *            the prop
+	 */
+	@Override
+	public void process(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName) {
+		if (prop.getDisplayProperty() != null) {
+			String value = request.getParameter(propName);
+			String old = obj.getProperty(prop);
 
-        return ret;
-    }
+			if (value != null) {
+				if ((value.length() > 0) && !value.equals(old)) {
+					try {
+						obj.setDateProperty(prop, format.parse(value));
+					} catch (Exception e) {
+						log.error(e);
+					}
+				} else if ((value.length() == 0) && (old != null)) {
+					obj.removeProperty(prop);
+				}
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.base.DateElementBase#getConstraints()
+	 */
+	@Override
+	public String getConstraints() {
+		String ret = super.getConstraints();
+
+		if (ret != null) {
+			ret = SWBUtils.TEXT.replaceAll(ret, "{today}", SWBUtils.TEXT.getStrDate(new Date(), "es", "yyyy-mm-dd")); // 2006-12-31
+		}
+
+		return ret;
+	}
 }

@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,353 +18,344 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
-
-//~--- non-JDK imports --------------------------------------------------------
-
-import org.semanticwb.Logger;
-import org.semanticwb.SWBUtils;
-import org.semanticwb.model.base.*;
-import org.semanticwb.platform.SemanticObject;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Date;
 import java.util.StringTokenizer;
 
-// TODO: Auto-generated Javadoc
+import org.semanticwb.Logger;
+import org.semanticwb.SWBUtils;
+import org.semanticwb.model.base.CalendarBase;
+import org.semanticwb.platform.SemanticObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 /**
  * The Class Calendar.
  */
 public class Calendar extends CalendarBase {
-    
-    /** The log. */
-    private static Logger log    = SWBUtils.getLogger(Calendar.class);
-    
-    /** The m_dom. */
-    private Document      m_dom  = null;
-    
-    /** The m_node. */
-    private NodeList      m_node = null;
 
-    /**
-     * Instantiates a new calendar.
-     * 
-     * @param base the base
-     */
-    public Calendar(SemanticObject base) {
-        super(base);
-    }
+	/** The log. */
+	private static Logger LOG = SWBUtils.getLogger(Calendar.class);
 
-    /**
-     * Gets the dom.
-     * 
-     * @return the dom
-     */
-    public Document getDom() {
-        return getSemanticObject().getDomProperty(swb_xml);
-    }
+	/** The m_dom. */
+	private Document mDom = null;
 
-    /**
-     * Gets the node list.
-     * 
-     * @return the node list
-     */
-    private NodeList getNodeList() {
-        Document aux = getDom();
+	/** The m_node. */
+	private NodeList mNode = null;
 
-        if (aux != m_dom) {
-            m_dom = aux;
+	/**
+	 * Instantiates a new calendar.
+	 * 
+	 * @param base
+	 *            the base
+	 */
+	public Calendar(SemanticObject base) {
+		super(base);
+	}
 
-            NodeList nl = aux.getElementsByTagName("interval");
-            int      n  = nl.getLength();
+	/**
+	 * Gets the dom.
+	 * 
+	 * @return the dom
+	 */
+	public Document getDom() {
+		return getSemanticObject().getDomProperty(swb_xml);
+	}
 
-            if (n > 0) {
-                m_node = nl;
-            } else {
-                m_node = null;
-            }
-        }
+	/**
+	 * Gets the node list.
+	 * 
+	 * @return the node list
+	 */
+	private NodeList getNodeList() {
+		Document aux = getDom();
 
-        // System.out.println("getFilterNode:"+getURI()+" "+m_filternode);
-        return m_node;
-    }
+		if (aux != mDom) {
+			mDom = aux;
 
-    /**
-     * Checks if is on schedule.
-     * 
-     * @return true, if is on schedule
-     */
-    public boolean isOnSchedule() {
-        boolean  ret   = false;
-        Date     today = new Date();
-        NodeList nl    = getNodeList();
+			NodeList nl = aux.getElementsByTagName("interval");
+			int n = nl.getLength();
 
-        if (nl == null) {
-            ret = true;
-        } else {
-            for (int x = 0; x < nl.getLength(); x++) {
-                Node interval = nl.item(x);
+			if (n > 0) {
+				mNode = nl;
+			} else {
+				mNode = null;
+			}
+		}
 
-                try {
-                    ret = eval(today, interval);
+		return mNode;
+	}
 
-                    if (ret) {
-                        ret = true;
+	/**
+	 * Checks if is on schedule.
+	 * 
+	 * @return true, if is on schedule
+	 */
+	public boolean isOnSchedule() {
+		boolean ret = false;
+		Date today = new Date();
+		NodeList nl = getNodeList();
 
-                        break;
-                    }
-                } catch (Exception e) {
-                    log.error(e);
-                }
-            }
-        }
+		if (nl == null) {
+			ret = true;
+		} else {
+			for (int x = 0; x < nl.getLength(); x++) {
+				Node interval = nl.item(x);
 
-        return ret;
-    }
+				try {
+					ret = eval(today, interval);
 
-    /**
-     * Eval.
-     * 
-     * @param today the today
-     * @param interval the interval
-     * @return true, if successful
-     * @throws Exception the exception
-     */
-    private boolean eval(Date today, Node interval) throws Exception {
-        boolean ret     = true;
-        Date    inidate = null;
+					if (ret) {
+						ret = true;
 
-        if (interval != null) {
-            NodeList nl = interval.getChildNodes();
+						break;
+					}
+				} catch (Exception e) {
+					LOG.error(e);
+				}
+			}
+		}
 
-            for (int x = 0; x < nl.getLength(); x++) {
-                if (nl.item(x) != null) {
-                    String name = nl.item(x).getNodeName();
+		return ret;
+	}
 
-                    // System.out.println("node:"+name);
-                    if (name.equals("inidate")) {
-                        inidate = new Date(nl.item(x).getFirstChild().getNodeValue());
+	/**
+	 * Eval.
+	 * 
+	 * @param today
+	 *            the today
+	 * @param interval
+	 *            the interval
+	 * @return true, if successful
+	 * @throws Exception
+	 *             the exception
+	 */
+	private boolean eval(Date today, Node interval) throws Exception {
+		boolean ret = true;
+		Date inidate = null;
 
-                        if (inidate.after(today)) {
-                            ret = false;
+		if (interval != null) {
+			NodeList nl = interval.getChildNodes();
 
-                            break;
-                        }
-                    } else if (name.equals("enddate")) {
-                        try{
-                            Date enddate = new Date(nl.item(x).getFirstChild().getNodeValue());
+			for (int x = 0; x < nl.getLength(); x++) {
+				if (nl.item(x) != null) {
+					String name = nl.item(x).getNodeName();
 
-                            enddate.setHours(23);
-                            enddate.setMinutes(59);
-                            enddate.setSeconds(59);
+					if (name.equals("inidate")) {
+						inidate = new Date(nl.item(x).getFirstChild().getNodeValue());
 
-                            if (enddate.before(today)) {
-                                ret = false;
+						if (inidate.after(today)) {
+							ret = false;
 
-                                break;
-                            }
-                       }catch(Exception e){
-                           System.out.println("Nodo Mal en Calendar/Eval:"+nl.item(x).getFirstChild().getNodeValue());
-                       }
-                    } else if (name.equals("starthour")) {
-                        String          time = nl.item(x).getFirstChild().getNodeValue();
-                        StringTokenizer st   = new StringTokenizer(time, ":");
-                        int             h    = 0,
-                                        m    = 0,
-                                        s    = 0;
+							break;
+						}
+					} else if (name.equals("enddate")) {
+						try {
+							Date enddate = new Date(nl.item(x).getFirstChild().getNodeValue());
 
-                        try {
-                            h = Integer.parseInt(st.nextToken());
+							enddate.setHours(23);
+							enddate.setMinutes(59);
+							enddate.setSeconds(59);
 
-                            if (st.hasMoreTokens()) {
-                                m = Integer.parseInt(st.nextToken());
-                            }
+							if (enddate.before(today)) {
+								ret = false;
 
-                            if (st.hasMoreTokens()) {
-                                s = Integer.parseInt(st.nextToken());
-                            }
-                        } catch (Exception noe) {
-                            // No error
-                        }
+								break;
+							}
+						} catch (Exception e) {
+							LOG.error("Nodo Mal en Calendar/Eval:" + nl.item(x).getFirstChild().getNodeValue(), e);
+						}
+					} else if (name.equals("starthour")) {
+						String time = nl.item(x).getFirstChild().getNodeValue();
+						StringTokenizer st = new StringTokenizer(time, ":");
+						int h = 0, m = 0, s = 0;
 
-                        inidate = new Date(today.getTime());
-                        inidate.setHours(h);
-                        inidate.setMinutes(m);
-                        inidate.setSeconds(s);
+						try {
+							h = Integer.parseInt(st.nextToken());
 
-                        // System.out.println("inidate:"+inidate);
-                        // System.out.println("today:"+today);
-                        if (inidate.after(today)) {
-                            ret = false;
+							if (st.hasMoreTokens()) {
+								m = Integer.parseInt(st.nextToken());
+							}
 
-                            break;
-                        }
-                    } else if (name.equals("endhour")) {
-                        String          time = nl.item(x).getFirstChild().getNodeValue();
-                        StringTokenizer st   = new StringTokenizer(time, ":");
-                        int             h    = 0,
-                                        m    = 0,
-                                        s    = 60;
+							if (st.hasMoreTokens()) {
+								s = Integer.parseInt(st.nextToken());
+							}
+						} catch (Exception noe) {
+							// No error
+						}
 
-                        try {
-                            h = Integer.parseInt(st.nextToken());
+						inidate = new Date(today.getTime());
+						inidate.setHours(h);
+						inidate.setMinutes(m);
+						inidate.setSeconds(s);
 
-                            if (st.hasMoreTokens()) {
-                                m = Integer.parseInt(st.nextToken());
-                            }
+						if (inidate.after(today)) {
+							ret = false;
+							break;
+						}
+					} else if (name.equals("endhour")) {
+						String time = nl.item(x).getFirstChild().getNodeValue();
+						StringTokenizer st = new StringTokenizer(time, ":");
+						int h = 0, m = 0, s = 60;
 
-                            if (st.hasMoreTokens()) {
-                                s = Integer.parseInt(st.nextToken());
-                            }
-                        } catch (Exception noe) {
-                            // No error
-                        }
+						try {
+							h = Integer.parseInt(st.nextToken());
 
-                        Date enddate = new Date(today.getTime());
+							if (st.hasMoreTokens()) {
+								m = Integer.parseInt(st.nextToken());
+							}
 
-                        enddate.setHours(h);
-                        enddate.setMinutes(m);
-                        enddate.setSeconds(s);
+							if (st.hasMoreTokens()) {
+								s = Integer.parseInt(st.nextToken());
+							}
+						} catch (Exception noe) {
+							// No error
+						}
 
-                        // System.out.println("enddate:"+enddate);
-                        // System.out.println("today:"+today);
-                        if (enddate.before(today)) {
-                            ret = false;
+						Date enddate = new Date(today.getTime());
 
-                            break;
-                        }
-                    } else if (name.equals("iterations") && !evalIteration(inidate, today, nl.item(x)))
-                    {
-                        ret = false;
-                        break;
-                    }
-                }
-            }
-        }
+						enddate.setHours(h);
+						enddate.setMinutes(m);
+						enddate.setSeconds(s);
 
-        // System.out.println("ret:"+ret);
-        return ret;
-    }
+						if (enddate.before(today)) {
+							ret = false;
+							break;
+						}
+					} else if (name.equals("iterations") && !evalIteration(inidate, today, nl.item(x))) {
+						ret = false;
+						break;
+					}
+				}
+			}
+		}
 
-    /**
-     * Eval iteration.
-     * 
-     * @param inidate the inidate
-     * @param today the today
-     * @param iteration the iteration
-     * @return true, if successful
-     * @throws Exception the exception
-     * @return
-     */
-    private boolean evalIteration(Date inidate, Date today, Node iteration) throws Exception {
-        boolean ret = true;
+		return ret;
+	}
 
-        try {
-            NodeList nl = iteration.getChildNodes();
+	/**
+	 * Eval iteration.
+	 * 
+	 * @param inidate
+	 *            the inidate
+	 * @param today
+	 *            the today
+	 * @param iteration
+	 *            the iteration
+	 * @return true, if successful
+	 * @throws Exception
+	 *             the exception
+	 * @return
+	 */
+	private boolean evalIteration(Date inidate, Date today, Node iteration) throws Exception {
+		boolean ret = true;
 
-            for (int x = 0; x < nl.getLength(); x++) {
-                String name = nl.item(x).getNodeName();
+		try {
+			NodeList nl = iteration.getChildNodes();
 
-                if (name.equals("weekly") && !evalElement(inidate, today, nl.item(x))) {
-                    ret = false;
-                    break;
-                } else if (name.equals("monthly") && !evalElement(inidate, today, nl.item(x))) {
-                    ret = false;
-                    break;
-                } else if (name.equals("yearly") && !evalElement(inidate, today, nl.item(x))) {
-                    ret = false;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            throw new Exception("error Calendar Iteration 1", e);
-        }
+			for (int x = 0; x < nl.getLength(); x++) {
+				String name = nl.item(x).getNodeName();
+				boolean eval = evalElement(inidate, today, nl.item(x));
+				
+				if (!eval && (name.equals("weekly") || name.equals("monthly") || name.equals("yearly"))) {
+					ret = false;
+					break;
+				}
 
-        return ret;
-    }
+				/*if (name.equals("weekly") && !evalElement(inidate, today, nl.item(x))) {
+					ret = false;
+					break;
+				} else if (name.equals("monthly") && !evalElement(inidate, today, nl.item(x))) {
+					ret = false;
+					break;
+				} else if (name.equals("yearly") && !evalElement(inidate, today, nl.item(x))) {
+					ret = false;
+					break;
+				}*/
+			}
+		} catch (Exception e) {
+			throw new Exception("error Calendar Iteration 1", e);
+		}
 
-    /**
-     * Eval element.
-     * 
-     * @param inidate the inidate
-     * @param today the today
-     * @param element the element
-     * @return true, if successful
-     * @throws Exception the exception
-     * @return
-     */
-    private boolean evalElement(Date inidate, Date today, Node element) throws Exception {
-        boolean ret = true;
+		return ret;
+	}
 
-        try {
-            NodeList nl = element.getChildNodes();
+	/**
+	 * Eval element.
+	 * 
+	 * @param inidate
+	 *            the inidate
+	 * @param today
+	 *            the today
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 * @throws Exception
+	 *             the exception
+	 * @return
+	 */
+	private boolean evalElement(Date inidate, Date today, Node element) throws Exception {
+		boolean ret = true;
 
-            for (int x = 0; x < nl.getLength(); x++) {
-                String name  = nl.item(x).getNodeName();
-                String value = nl.item(x).getFirstChild().getNodeValue();
-                int    val   = Integer.parseInt(value);
+		try {
+			NodeList nl = element.getChildNodes();
 
-                if (name.equals("wdays")) {
-                    if (((1 << today.getDay()) & val) == 0) {
-                        ret = false;
+			for (int x = 0; x < nl.getLength(); x++) {
+				String name = nl.item(x).getNodeName();
+				String value = nl.item(x).getFirstChild().getNodeValue();
+				int val = Integer.parseInt(value);
 
-                        break;
-                    }
-                } else if (name.equals("day")) {
-                    if (today.getDate() != val) {
-                        ret = false;
+				if (name.equals("wdays")) {
+					if (((1 << today.getDay()) & val) == 0) {
+						ret = false;
+						break;
+					}
+				} else if (name.equals("day")) {
+					if (today.getDate() != val) {
+						ret = false;
+						break;
+					}
+				} else if (name.equals("months")) {
+					int inim = inidate.getMonth(); // mes inicial
+					int actm = today.getMonth(); // mes actual
+					int dify = today.getYear() - inidate.getYear(); // diferencia de años
+					int difm = actm + dify * 12 - inim; // diferencia de meses realses contando años
+					int modm = difm % val; // modulo de los mese con respecto al valor
 
-                        break;
-                    }
-                } else if (name.equals("months")) {
-                    int inim = inidate.getMonth();                     // mes inicial
-                    int actm = today.getMonth();                       // mes actual
-                    int dify = today.getYear() - inidate.getYear();    // diferencia de años
-                    int difm = actm + dify * 12 - inim;                // diferencia de meses realses contando años
-                    int modm = difm % val;                             // modulo de los mese con respecto al valor
+					if (modm != 0) {
+						ret = false;
+						break;
+					}
+				} else if (name.equals("week")) {
+					int week = (int) ((today.getDate() + inidate.getDay() - 1) / 7) + 1;
 
-                    // System.out.println("difm="+difm);
-                    // System.out.println("modm="+modm);
-                    if (modm != 0) {
-                        ret = false;
+					if ((val != week) && (val == 5) && (week != 4)) {
+						ret = false;
+						break;
+					}
+				} else if (name.equals("month")) {
+					if ((today.getMonth() + 1) != val) {
+						ret = false;
+						break;
+					}
+				} else if (name.equals("years")) {
+					int dify = today.getYear() - inidate.getYear(); // diferencia de años
+					int mody = dify % val; // modulo de los años con respecto al valor
 
-                        break;
-                    }
-                } else if (name.equals("week")) {
-                    int week = (int) ((today.getDate() + inidate.getDay() - 1) / 7) + 1;
+					if (mody != 0) {
+						ret = false;
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new Exception("Error Calendar Iteration 2", e);
+		}
 
-                    if ((val != week) && (val == 5) && (week != 4)) {
-                        ret = false;
-                        break;
-                    }
-                } else if (name.equals("month")) {
-                    if ((today.getMonth() + 1) != val) {
-                        ret = false;
-
-                        break;
-                    }
-                } else if (name.equals("years")) {
-                    int dify = today.getYear() - inidate.getYear();    // diferencia de años
-                    int mody = dify % val;                             // modulo de los años con respecto al valor
-
-                    if (mody != 0) {
-                        ret = false;
-
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new Exception("Error Calendar Iteration 2", e);
-        }
-
-        return ret;
-    }
+		return ret;
+	}
 }

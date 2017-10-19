@@ -22,12 +22,9 @@
  */
 package org.semanticwb.model;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-import org.semanticwb.model.base.*;
+import org.semanticwb.model.base.LanguageBase;
 import org.semanticwb.platform.SemanticObject;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Language.
  */

@@ -23,7 +23,6 @@
 package org.semanticwb.model;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Ontology.
  */

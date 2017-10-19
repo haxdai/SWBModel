@@ -53,25 +53,13 @@ public class CodeEditor extends org.semanticwb.model.base.CodeEditorBase {
         String         name     = propName;
         String         label    = prop.getDisplayName(lang);
         SemanticObject sobj     = prop.getDisplayProperty();
-        boolean        required = prop.isRequired();
         String         pmsg     = null;
-        String         imsg     = null;
         String         language = "es";
 
         if (sobj != null) {
             DisplayProperty dobj = new DisplayProperty(sobj);
 
             pmsg = dobj.getDisplayPromptMessage(lang);
-            imsg = dobj.getDisplayInvalidMessage(lang);
-        }
-
-        if (imsg == null && required)
-        {
-            imsg = label + " es requerido.";
-
-            if (lang.equals("en")) {
-                imsg = label + " is required.";
-            }
         }
 
         if (pmsg == null) {

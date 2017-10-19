@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticProperty;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Label.
  */
@@ -59,8 +58,10 @@ public class Label extends org.semanticwb.model.base.LabelBase {
     @Override
     public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type,
             String mode, String lang) {
-        if (obj == null) {
-            obj = new SemanticObject();
+        
+    		SemanticObject ob = obj;
+    		if (obj == null) {
+            ob = new SemanticObject();
         }
 
         StringBuilder ret = new StringBuilder();
@@ -68,7 +69,7 @@ public class Label extends org.semanticwb.model.base.LabelBase {
         String value = request.getParameter(propName);
 
         if (value == null) {
-            value = obj.getProperty(prop);
+            value = ob.getProperty(prop);
         }
 
         if (value == null) {

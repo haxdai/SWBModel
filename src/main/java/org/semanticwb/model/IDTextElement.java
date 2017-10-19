@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,11 +18,12 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.platform.SemanticObject;
@@ -32,7 +33,7 @@ import org.semanticwb.platform.SemanticProperty;
 public class IDTextElement extends org.semanticwb.model.base.IDTextElementBase 
 {
      /** The log. */
-    private static Logger log = SWBUtils.getLogger(IDTextElement.class);
+    private static Logger LOG = SWBUtils.getLogger(IDTextElement.class);
 
     public IDTextElement(org.semanticwb.platform.SemanticObject base)
     {
@@ -74,7 +75,7 @@ public class IDTextElement extends org.semanticwb.model.base.IDTextElementBase
 
         String value = request.getParameter(propName);
 
-        if(value!=null&&value.indexOf(" ")>=0)
+        if(value!=null&&value.indexOf(' ')>=0)
         {
             throw new FormValidateException("No se permiten espacios en blanco.");
         }

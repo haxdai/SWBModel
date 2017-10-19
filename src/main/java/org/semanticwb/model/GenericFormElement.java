@@ -34,291 +34,302 @@ import org.semanticwb.platform.SemanticProperty;
  * The Class GenericFormElement.
  */
 public class GenericFormElement extends FormElementBase {
-    
-    /**
-     * Instantiates a new generic form element.
-     */
-    public GenericFormElement() {
-        super(new SemanticObject());
-    }
 
-    /**
-     * Instantiates a new generic form element.
-     * 
-     * @param obj the obj
-     */
-    public GenericFormElement(SemanticObject obj) {
-        super(obj);
-    }
+	/**
+	 * Instantiates a new generic form element.
+	 */
+	public GenericFormElement() {
+		super(new SemanticObject());
+	}
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.FormElementBase#renderElement(javax.servlet.http.HttpServletRequest, org.semanticwb.platform.SemanticObject, org.semanticwb.platform.SemanticProperty, java.lang.String, java.lang.String, java.lang.String)
-     */
-    /**
-     * Render element.
-     * 
-     * @param request the request
-     * @param obj the obj
-     * @param prop the prop
-     * @param type the type
-     * @param mode the mode
-     * @param lang the lang
-     * @return the string
-     */
-    @Override
-    public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type,
-                                String mode, String lang) {
-        if (obj == null) {
-            obj = new SemanticObject();
-        }
+	/**
+	 * Instantiates a new generic form element.
+	 * 
+	 * @param obj
+	 *            the obj
+	 */
+	public GenericFormElement(SemanticObject obj) {
+		super(obj);
+	}
 
-        boolean isDojo = type.equals("dojo");
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.semanticwb.model.base.FormElementBase#renderElement(javax.servlet.http.
+	 * HttpServletRequest, org.semanticwb.platform.SemanticObject,
+	 * org.semanticwb.platform.SemanticProperty, java.lang.String, java.lang.String,
+	 * java.lang.String)
+	 */
+	/**
+	 * Render element.
+	 * 
+	 * @param request
+	 *            the request
+	 * @param obj
+	 *            the obj
+	 * @param prop
+	 *            the prop
+	 * @param type
+	 *            the type
+	 * @param mode
+	 *            the mode
+	 * @param lang
+	 *            the lang
+	 * @return the string
+	 */
+	@Override
+	public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName,
+			String type, String mode, String lang) {
+		
+		SemanticObject ob = obj;
+		if (obj == null) {
+			ob = new SemanticObject();
+		}
 
-        StringBuilder   ret          = new StringBuilder();
-        String         name         = propName;
-        String         label        = prop.getDisplayName(lang);
-        SemanticObject sobj         = prop.getDisplayProperty();
-        boolean        required     = prop.isRequired();
-        String         pmsg         = null;
-        String         imsg         = null;
-        String         selectValues = null;
-        boolean        disabled     = false;
+		boolean isDojo = type.equals("dojo");
 
-        if (sobj != null) {
-            DisplayProperty dobj = new DisplayProperty(sobj);
+		StringBuilder ret = new StringBuilder();
+		String name = propName;
+		String label = prop.getDisplayName(lang);
+		SemanticObject sobj = prop.getDisplayProperty();
+		boolean required = prop.isRequired();
+		String pmsg = null;
+		String imsg = null;
+		String selectValues = null;
+		boolean disabled = false;
 
-            pmsg = dobj.getDisplayPromptMessage(lang);
-            imsg = dobj.getDisplayInvalidMessage(lang);
-            selectValues = dobj.getDisplaySelectValues(lang);
-            disabled     = dobj.isDisabled();
-        }
+		if (sobj != null) {
+			DisplayProperty dobj = new DisplayProperty(sobj);
 
-        String ext = "";
+			pmsg = dobj.getDisplayPromptMessage(lang);
+			imsg = dobj.getDisplayInvalidMessage(lang);
+			selectValues = dobj.getDisplaySelectValues(lang);
+			disabled = dobj.isDisabled();
+		}
 
-        if (isDojo) {
-            if (imsg == null) {
-                if (prop.isDataTypeProperty() && prop.isNumeric()) {
-                    imsg = getLocaleString("inv_number", lang);
-                } else {
-                    imsg = getLocaleString("inv_data", lang);
-                }
+		String ext = "";
 
-                if (required) {
-                    imsg = label + " " + getLocaleString("required", lang);
-                }
-            }
+		if (isDojo) {
+			if (imsg == null) {
+				if (prop.isDataTypeProperty() && prop.isNumeric()) {
+					imsg = getLocaleString("inv_number", lang);
+				} else {
+					imsg = getLocaleString("inv_data", lang);
+				}
 
-            if (pmsg == null) {
-                pmsg = getLocaleString("enter", lang) + " " + label;
-            }
-        }
+				if (required) {
+					imsg = label + " " + getLocaleString("required", lang);
+				}
+			}
 
-        if (disabled) {
-            ext += " disabled=\"disabled\"";
-        }
+			if (pmsg == null) {
+				pmsg = getLocaleString("enter", lang) + " " + label;
+			}
+		}
 
-        if (prop.isDataTypeProperty()) {
-            if (selectValues != null) {
-                String value = request.getParameter(propName);
+		if (disabled) {
+			ext += " disabled=\"disabled\"";
+		}
 
-                if (value == null) {
-                    value = obj.getProperty(prop);
-                }
+		if (prop.isDataTypeProperty()) {
+			if (selectValues != null) {
+				String value = request.getParameter(propName);
 
-                ret.append("<span>");
+				if (value == null) {
+					value = ob.getProperty(prop);
+				}
 
-                StringTokenizer st = new StringTokenizer(selectValues, "|");
+				ret.append("<span>");
 
-                while (st.hasMoreTokens()) {
-                    String tok = st.nextToken();
-                    int    ind = tok.indexOf(':');
-                    String id  = tok;
-                    String val = tok;
+				StringTokenizer st = new StringTokenizer(selectValues, "|");
 
-                    if (ind > 0) {
-                        id  = tok.substring(0, ind);
-                        val = tok.substring(ind + 1);
-                    }
+				while (st.hasMoreTokens()) {
+					String tok = st.nextToken();
+					int ind = tok.indexOf(':');
+					String id = tok;
+					String val = tok;
 
-                    ret.append("<label for=\"" + name + id + "\">");
-                    ret.append("<input");
+					if (ind > 0) {
+						id = tok.substring(0, ind);
+						val = tok.substring(ind + 1);
+					}
 
-                    if (isDojo) {
-                        ret.append(" dojoType=\"dijit.form.RadioButton\"");
-                    }
+					ret.append("<label for=\"" + name + id + "\">");
+					ret.append("<input");
 
-                    if (mode.equals("view")) {
-                        ret.append(" disabled=\"disabled\"");
-                    }
+					if (isDojo) {
+						ret.append(" dojoType=\"dijit.form.RadioButton\"");
+					}
 
-                    ret.append(" id_=\"" + name + id + "\" name=\"" + name + "\"");
+					if (mode.equals("view")) {
+						ret.append(" disabled=\"disabled\"");
+					}
 
-                    if (id.equals(value)) {
-                        ret.append(" checked=\"checked\"");
-                    }
+					ret.append(" id_=\"" + name + id + "\" name=\"" + name + "\"");
 
-                    ret.append(" value=\"" + id + "\" type=\"radio\" />" + val + "</label>");
-                }
+					if (id.equals(value)) {
+						ret.append(" checked=\"checked\"");
+					}
 
-                ret.append("</span>");
-            } else if (prop.isBoolean()) {
-                String  checked = "";
-                boolean value   = false;
-                String  aux     = request.getParameter(propName);
+					ret.append(" value=\"" + id + "\" type=\"radio\" />" + val + "</label>");
+				}
 
-                if (aux != null) {
-                    value = true;
-                } else {
-                    value = obj.getBooleanProperty(prop);
-                }
+				ret.append("</span>");
+			} else if (prop.isBoolean()) {
+				String checked = "";
+				boolean value = false;
+				String aux = request.getParameter(propName);
 
-                if (value) {
-                    checked = "checked=\"checked\"";
-                }
+				if (aux != null) {
+					value = true;
+				} else {
+					value = ob.getBooleanProperty(prop);
+				}
 
-                ret.append("<input type=\"checkbox\" id_=\"" + name + "\" name=\"" + name + "\" " + checked);
+				if (value) {
+					checked = "checked=\"checked\"";
+				}
 
-                if (isDojo) {
-                    ret.append(" dojoType=\"dijit.form.CheckBox\"");
-                }
+				ret.append("<input type=\"checkbox\" id_=\"" + name + "\" name=\"" + name + "\" " + checked);
 
-                if (isDojo && required) {
-                    ret.append(" required=\"" + required + "\"");
-                }
+				if (isDojo) {
+					ret.append(" dojoType=\"dijit.form.CheckBox\"");
+				}
 
-                if (isDojo) {
-                    ret.append(" promptMessage=\"" + pmsg + "\"");
-                    ret.append(" invalidMessage=\"" + imsg + "\"");
-                }
+				if (isDojo && required) {
+					ret.append(" required=\"" + required + "\"");
+				}
 
-                ret.append(ext);
+				if (isDojo) {
+					ret.append(" promptMessage=\"" + pmsg + "\"");
+					ret.append(" invalidMessage=\"" + imsg + "\"");
+				}
 
-                if (mode.equals("view")) {
-                    ret.append(" disabled=\"disabled\"");
-                }
+				ret.append(ext);
 
-                ret.append("/>");
-            } else if (prop.isDateTime()) {
-                String value = request.getParameter(propName);
+				if (mode.equals("view")) {
+					ret.append(" disabled=\"disabled\"");
+				}
 
-                if (value == null) {
-                    value = obj.getProperty(prop);
-                }
+				ret.append("/>");
+			} else if (prop.isDateTime()) {
+				String value = request.getParameter(propName);
 
-                if (value == null) {
-                    value = "";
-                }
+				if (value == null) {
+					value = ob.getProperty(prop);
+				}
 
-                ret.append("<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>");
-            } else if (prop.isInt() || prop.isLong()) {
-                String value = request.getParameter(propName);
+				if (value == null) {
+					value = "";
+				}
 
-                if (value == null) {
-                    value = obj.getProperty(prop);
-                }
+				ret.append("<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>");
+			} else if (prop.isInt() || prop.isLong()) {
+				String value = request.getParameter(propName);
 
-                if (value == null) {
-                    value = "";
-                }
+				if (value == null) {
+					value = ob.getProperty(prop);
+				}
 
-                if (mode.equals("edit") || mode.equals("create") || mode.equals("filter")) {
-                    ret.append("<input _id=\"" + name + "\" name=\"" + name + "\" value=\"" + value + "\"");
+				if (value == null) {
+					value = "";
+				}
 
-                    if (isDojo) {
-                        ret.append(" dojoType=\"dijit.form.ValidationTextBox\"");
-                        ret.append(" regExp=\"\\d+\"");
-                    }
+				if (mode.equals("edit") || mode.equals("create") || mode.equals("filter")) {
+					ret.append("<input _id=\"" + name + "\" name=\"" + name + "\" value=\"" + value + "\"");
 
-                    if (!mode.equals("filter") && isDojo) {
-                        if(required)ret.append(" required=\"" + required + "\"");
-                    }
+					if (isDojo) {
+						ret.append(" dojoType=\"dijit.form.ValidationTextBox\"");
+						ret.append(" regExp=\"\\d+\"");
+					}
 
-                    if (isDojo) {
-                        ret.append(" promptMessage=\"" + pmsg + "\"");
-                        ret.append(" invalidMessage=\"" + imsg + "\"");
-                    }
+					if (!mode.equals("filter") && isDojo) {
+						if (required)
+							ret.append(" required=\"" + required + "\"");
+					}
 
-                    ret.append(" style=\"width:100px;\"");
-                    ret.append(" " + getAttributes());
+					if (isDojo) {
+						ret.append(" promptMessage=\"" + pmsg + "\"");
+						ret.append(" invalidMessage=\"" + imsg + "\"");
+					}
 
-                    ret.append(ext);
-                    ret.append("/>");
-                } else if (mode.equals("view")) {
-                    ret.append("<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>");
-                }
-            } else {
-                String value = request.getParameter(propName);
+					ret.append(" style=\"width:100px;\"");
+					ret.append(" " + getAttributes());
 
-                if (value == null) {
-                    value = obj.getProperty(prop);
-                }
+					ret.append(ext);
+					ret.append("/>");
+				} else if (mode.equals("view")) {
+					ret.append("<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>");
+				}
+			} else {
+				String value = request.getParameter(propName);
 
-                if (value == null) {
-                    value = "";
-                }
+				if (value == null) {
+					value = ob.getProperty(prop);
+				}
 
-                value=value.replace("\"", "&quot;");
+				if (value == null) {
+					value = "";
+				}
 
-                if (mode.equals("edit") || mode.equals("create") || mode.equals("filter")) {
-                    ret.append("<input _id=\"" + name + "\" name=\"" + name + "\" value=\"" + value + "\"");
+				value = value.replace("\"", "&quot;");
 
-                    if (isDojo) {
-                        ret.append(" dojoType=\"dijit.form.ValidationTextBox\"");
-                    }
+				if (mode.equals("edit") || mode.equals("create") || mode.equals("filter")) {
+					ret.append("<input _id=\"" + name + "\" name=\"" + name + "\" value=\"" + value + "\"");
 
-                    if (!mode.equals("filter") || isDojo) {
-                        if(required)ret.append(" required=\"" + required + "\"");
-                    }
+					if (isDojo) {
+						ret.append(" dojoType=\"dijit.form.ValidationTextBox\"");
+					}
 
-                    if (isDojo) {
-                        ret.append(" promptMessage=\"" + pmsg + "\"");
-                        ret.append(" invalidMessage=\"" + imsg + "\"");
-                    }
+					if (!mode.equals("filter") || isDojo) {
+						if (required)
+							ret.append(" required=\"" + required + "\"");
+					}
 
-                    ret.append(" style=\"width:300px;\"");
-                    ret.append(" " + getAttributes());
+					if (isDojo) {
+						ret.append(" promptMessage=\"" + pmsg + "\"");
+						ret.append(" invalidMessage=\"" + imsg + "\"");
+					}
 
-                    if (isDojo) {
-                        ret.append(" trim=\"true\"");
-                    }
+					ret.append(" style=\"width:300px;\"");
+					ret.append(" " + getAttributes());
 
-                    ret.append(ext);
-                    ret.append("/>");
-                } else if (mode.equals("view")) {
-                    ret.append("<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>");
-                }
-            }
-        } else if (prop.isObjectProperty()) {
-            if (!name.startsWith("has"))
-            {
-                SemanticObject value = null;
-                String         aux   = request.getParameter(propName);
+					if (isDojo) {
+						ret.append(" trim=\"true\"");
+					}
 
-                if (aux != null) {
-                    value = SemanticObject.createSemanticObject(aux);
-                } else {
-                    value = obj.getObjectProperty(prop);
-                }
+					ret.append(ext);
+					ret.append("/>");
+				} else if (mode.equals("view")) {
+					ret.append("<span _id=\"" + name + "\" name=\"" + name + "\">" + value + "</span>");
+				}
+			}
+		} else if (prop.isObjectProperty() && !name.startsWith("has")) {
+			SemanticObject value = null;
+			String aux = request.getParameter(propName);
 
-                ret.append("<span>");
-                                
+			if (aux != null) {
+				value = SemanticObject.createSemanticObject(aux);
+			} else {
+				value = ob.getObjectProperty(prop);
+			}
 
-                if (value != null) {
-                    if("swb".equals(value.getSemanticClass().getPrefix()))
-                    {
-                        ret.append("<a href=\"?suri=" + value.getEncodedURI() + "\" onclick=\"addNewTab('" + value.getURI()
-                               + "', null, '" + value.getDisplayName(lang) + "');return false;\">");
-                        ret.append(value.getDisplayName());
-                        ret.append("</a>");
-                    }else
-                    {
-                        ret.append(value.getDisplayName());
-                    }
-                }
-                ret.append("</span>");
-            }
-        }
+			ret.append("<span>");
 
-        return ret.toString();
-    }
+			if (value != null) {
+				if ("swb".equals(value.getSemanticClass().getPrefix())) {
+					ret.append("<a href=\"?suri=" + value.getEncodedURI() + "\" onclick=\"addNewTab('"
+							+ value.getURI() + "', null, '" + value.getDisplayName(lang) + "');return false;\">");
+					ret.append(value.getDisplayName());
+					ret.append("</a>");
+				} else {
+					ret.append(value.getDisplayName());
+				}
+			}
+			ret.append("</span>");
+		}
+
+		return ret.toString();
+	}
 }

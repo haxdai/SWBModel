@@ -6,7 +6,7 @@
  * procesada por personas y/o sistemas, es una creación original del Fondo de Información y Documentación
  * para la Industria INFOTEC, cuyo registro se encuentra actualmente en trámite.
  *
- * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público (‘open source’),
+ * INFOTEC pone a su disposición la herramienta SemanticWebBuilder a través de su licenciamiento abierto al público ('open source'),
  * en virtud del cual, usted podrá usarlo en las mismas condiciones con que INFOTEC lo ha diseñado y puesto a su disposición;
  * aprender de él; distribuirlo a terceros; acceder a su código fuente y modificarlo, y combinarlo o enlazarlo con otro software,
  * todo ello de conformidad con los términos y condiciones de la LICENCIA ABIERTA AL PÚBLICO que otorga INFOTEC para la utilización
@@ -18,154 +18,147 @@
  *
  * Si usted tiene cualquier duda o comentario sobre SemanticWebBuilder, INFOTEC pone a su disposición la siguiente
  * dirección electrónica:
- *  http://www.semanticwebbuilder.org
+ *  http://www.semanticwebbuilder.org.mx
  */
 package org.semanticwb.model;
 
-//~--- non-JDK imports --------------------------------------------------------
+import javax.servlet.http.HttpServletRequest;
 
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.platform.SemanticObject;
 import org.semanticwb.platform.SemanticProperty;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import javax.servlet.http.HttpServletRequest;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class LoginElement.
  */
 public class LoginElement extends org.semanticwb.model.base.LoginElementBase {
-    
-    /** The log. */
-    static Logger log = SWBUtils.getLogger(LoginElement.class);
 
-    /**
-     * Instantiates a new login element.
-     * 
-     * @param base the base
-     */
-    public LoginElement(org.semanticwb.platform.SemanticObject base) {
-        super(base);
-    }
+	/** The log. */
+	static Logger LOG = SWBUtils.getLogger(LoginElement.class);
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.Text#renderElement(javax.servlet.http.HttpServletRequest, org.semanticwb.platform.SemanticObject, org.semanticwb.platform.SemanticProperty, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName, String type,
-                                String mode, String lang) {
-        log.debug("Type: " + type);
-        
-        //System.out.println("obj:"+obj.getId()+" "+obj.getURI()+" "+obj.getModel()+" prop:"+obj+" propName:"+propName+" type:"+type+" mode:"+mode+" lang:"+lang);
-        
-        //System.out.println(getValidateURL(obj, prop));
-        
-        if (type.equals("dojo")) {
-            setAttribute("isValid",
-                         "return validateElement('" + propName + "','" + getValidateURL(obj, prop)
-                         + "',this.textbox.value);");
-        } else {
-            setAttribute("isValid", null);
-        }
+	/**
+	 * Instantiates a new login element.
+	 * 
+	 * @param base
+	 *            the base
+	 */
+	public LoginElement(org.semanticwb.platform.SemanticObject base) {
+		super(base);
+	}
 
-        return super.renderElement(request, obj, prop, propName, type, mode, lang);
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.Text#renderElement(javax.servlet.http.
+	 * HttpServletRequest, org.semanticwb.platform.SemanticObject,
+	 * org.semanticwb.platform.SemanticProperty, java.lang.String, java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public String renderElement(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName,
+			String type, String mode, String lang) {
+		
+		LOG.debug("Type: " + type);
 
-    /* (non-Javadoc)
-     * @see org.semanticwb.model.base.FormElementBase#validate(javax.servlet.http.HttpServletRequest, org.semanticwb.platform.SemanticObject, org.semanticwb.platform.SemanticProperty)
-     */
-    /**
-     * Validate.
-     * 
-     * @param request the request
-     * @param obj the obj
-     * @param prop the prop
-     * @throws FormValidateException the form validate exception
-     */
-    @Override
-    public void validate(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName)
-            throws FormValidateException
-    {
-        if (obj == null) {
-            obj = new SemanticObject();
-        }        
-        
-        super.validate(request, obj, prop, propName);
+		if (type.equals("dojo")) {
+			setAttribute("isValid", "return validateElement('" + propName + "','" + getValidateURL(obj, prop)
+					+ "',this.textbox.value);");
+		} else {
+			setAttribute("isValid", null);
+		}
 
-        String login = request.getParameter("usrLogin");
+		return super.renderElement(request, obj, prop, propName, type, mode, lang);
+	}
 
-        log.debug("obj: " + obj.getDisplayName());
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.semanticwb.model.base.FormElementBase#validate(javax.servlet.http.
+	 * HttpServletRequest, org.semanticwb.platform.SemanticObject,
+	 * org.semanticwb.platform.SemanticProperty)
+	 */
+	/**
+	 * Validate.
+	 * 
+	 * @param request
+	 *            the request
+	 * @param obj
+	 *            the obj
+	 * @param prop
+	 *            the prop
+	 * @throws FormValidateException
+	 *             the form validate exception
+	 */
+	@Override
+	public void validate(HttpServletRequest request, SemanticObject obj, SemanticProperty prop, String propName)
+			throws FormValidateException {
+		
+		SemanticObject ob = obj;
+		if (obj == null) {
+			ob = new SemanticObject();
+		}
 
-        String model = null;
-        User   cu    = null;
+		super.validate(request, ob, prop, propName);
 
-        if (obj.instanceOf(User.sclass))
-        {
-            cu    = new User(obj);
-            model = cu.getUserRepository().getId();
-        } else if (obj.instanceOf(UserRepository.sclass))
-        {
-            UserRepository ur = new UserRepository(obj);
+		String login = request.getParameter("usrLogin");
 
-            model = ur.getId();
-        }
+		LOG.debug("obj: " + ob.getDisplayName());
 
-        //String model=request.getParameter("model");
-        //System.out.println("login:"+login+" model:"+model);
-        if ((login == null) || (login.length() == 0) || (login.indexOf(' ') > -1) || (model == null))
-        {
-            //System.out.println("false1");
-            throw new FormValidateException(getLocaleString("errEmpty", "Login vacío o con espacios"));
-        } else
-        {
-            if (isValidId(login))
-            {
-                if (!((cu != null) && login.equalsIgnoreCase(cu.getLogin())))
-                {
-                    User tmpobj = SWBContext.getUserRepository(model).getUserByLogin(login);
+		String model = null;
+		User cu = null;
 
-                    if (tmpobj != null)
-                    {
-                        //System.out.println("false2");
-                        throw new FormValidateException(getLocaleString("errBusy", "Login ya ocupado"));
-                    }
-                }
-            } else
-            {
-                //System.out.println("false3");
-                throw new FormValidateException(getLocaleString("errInvalid", "Login con caracteres inválidos"));
-            }
-        }
-    }
+		if (ob.instanceOf(User.sclass)) {
+			cu = new User(ob);
+			model = cu.getUserRepository().getId();
+		} else if (ob.instanceOf(UserRepository.sclass)) {
+			UserRepository ur = new UserRepository(ob);
 
-    /**
-     * Checks if is valid id.
-     * 
-     * @param id the id
-     * @return true, if is valid id
-     */
-    private boolean isValidId(String id)
-    {
-        boolean ret = true;
+			model = ur.getId();
+		}
 
-        if (id != null && id.length()>=3) {
-            for (int x = 0; x < id.length(); x++) {
-                char ch = id.charAt(x);
+		if ((login == null) || (login.length() == 0) || (login.indexOf(' ') > -1) || (model == null)) {
+			throw new FormValidateException(getLocaleString("errEmpty", "Login vacío o con espacios"));
+		} else {
+			if (isValidId(login)) {
+				if (!((cu != null) && login.equalsIgnoreCase(cu.getLogin()))) {
+					User tmpobj = SWBContext.getUserRepository(model).getUserByLogin(login);
 
-                if (!(((ch >= '0') && (ch <= '9')) || ((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'))
-                        || (ch == '_') || (ch == '-') || (ch == '.') || (ch == '@'))) {
-                    ret = false;
+					if (tmpobj != null) {
+						throw new FormValidateException(getLocaleString("errBusy", "Login ya ocupado"));
+					}
+				}
+			} else {
+				throw new FormValidateException(getLocaleString("errInvalid", "Login con caracteres inválidos"));
+			}
+		}
+	}
 
-                    break;
-                }
-            }
-        } else {
-            ret = false;
-        }
+	/**
+	 * Checks if is valid id.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return true, if is valid id
+	 */
+	private boolean isValidId(String id) {
+		boolean ret = true;
 
-        return ret;
-    }
+		if (id != null && id.length() >= 3) {
+			for (int x = 0; x < id.length(); x++) {
+				char ch = id.charAt(x);
+
+				if (!(((ch >= '0') && (ch <= '9')) || ((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'))
+						|| (ch == '_') || (ch == '-') || (ch == '.') || (ch == '@'))) {
+					ret = false;
+
+					break;
+				}
+			}
+		} else {
+			ret = false;
+		}
+
+		return ret;
+	}
 }
