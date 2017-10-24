@@ -17,7 +17,7 @@
     </organization>
     
     <scm>
-      <url>scm:git:https://github.com/SemanticWebBuilder/[nombre del proyecto]</url>
+      <url>scm:git:https://github.com/SemanticWebBuilder/SWBModel</url>
     </scm>
     
     <profiles>
