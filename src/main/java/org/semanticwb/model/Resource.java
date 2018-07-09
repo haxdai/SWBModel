@@ -22,12 +22,6 @@
  */
 package org.semanticwb.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.semanticwb.Logger;
 import org.semanticwb.SWBException;
 import org.semanticwb.SWBPlatform;
@@ -37,6 +31,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 /**
  * The Class Resource.
@@ -295,7 +294,7 @@ public class Resource extends org.semanticwb.model.base.ResourceBase {
 	 * @throws SWBException
 	 *             the sWB exception
 	 */
-	public void updateAttributesToDB() {
+	public void updateAttributesToDB() throws SWBException {
 		Document dom = getDom();
 		if (dom != null) {
 			String xml = SWBUtils.XML.domToXml(dom);
